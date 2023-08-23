@@ -1,6 +1,7 @@
 console.log("Web Serverni Boshlash");
 const express = require("express");
 const app = express();
+const router = require("./router");
 
 //Mongodb chaqirish
 const db = require("./server").db();
@@ -19,5 +20,5 @@ app.set("views", "views");
 app.set("view engine", "ejs");
 
 //4routing
-
+app.use("/", router);
 module.exports = app;
