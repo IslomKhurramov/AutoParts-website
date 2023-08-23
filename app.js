@@ -3,10 +3,6 @@ const express = require("express");
 const app = express();
 const router = require("./router");
 
-//Mongodb chaqirish
-const db = require("./server").db();
-const mongodb = require("mongodb");
-
 //1
 app.use(express.static("public"));
 app.use("/uploads", express.static(__dirname + "/uploads"));
