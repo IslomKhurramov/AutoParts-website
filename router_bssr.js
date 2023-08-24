@@ -18,6 +18,7 @@ router_bssr.get("/logout", userController.logout);
 router_bssr.get("/check-me", userController.checkSessions);
 
 router_bssr.get("/products/user", userController.getUserProducts);
+
 router_bssr.post(
   "/products/create",
   userController.validateAuthUser,
@@ -25,6 +26,10 @@ router_bssr.post(
   productController.addNewProduct
 );
 
-router_bssr.post("/products/edit/:id", productController.editChosenProduct);
+router_bssr.post(
+  "/products/edit/:id",
+  userController.validateAuthUser,
+  productController.editChosenProduct
+);
 
 module.exports = router_bssr;
