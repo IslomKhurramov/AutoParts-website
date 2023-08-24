@@ -1,6 +1,18 @@
 const Member = require("../models/Member");
 let userController = module.exports;
 
+userController.getUserProducts = async (req, res) => {
+  try {
+    console.log("GET cont.getUserProducts");
+    //todo:get user data
+
+    res.render("user-products");
+  } catch (err) {
+    console.log("ERROR: cont.getUserProducts", err.message);
+    res.json({ state: "fail", message: err.message });
+  }
+};
+
 userController.getSignUpMyUserPage = async (req, res) => {
   try {
     console.log("GET cont.getSignUpMyUserPage");
@@ -18,7 +30,8 @@ userController.signupProcess = async (req, res) => {
     const member = new Member();
     const new_member = await member.signupData(data);
 
-    res.json({ state: "succeed", data: new_member });
+    req.session.member = new_member;
+    res.redirect("/resto/products/user");
   } catch (err) {
     console.log("ERROR: cont.signup", err.message);
     res.json({ state: "fail", message: err.message });
@@ -42,7 +55,10 @@ userController.loginProcess = async (req, res) => {
     const member = new Member();
     const result = await member.loginData(data);
 
-    res.json({ state: "succeed", data: result });
+    req.session.member = result;
+    req.session.save(function () {
+      res.redirect("/resto/products/user");
+    });
   } catch (err) {
     console.log(`ERROR, cont/login`);
     res.json({ state: "fail", message: err.message });
@@ -52,4 +68,12 @@ userController.loginProcess = async (req, res) => {
 userController.logout = (req, res) => {
   console.log("GET cont.logout");
   res.send("logout page");
+};
+
+userController.checkSessions = (req, res) => {
+  if (req.session?.member) {
+    res.json({ state: "succeed", data: req.session.member });
+  } else {
+    res.json({ state: "fail", message: "you are not authenticated" });
+  }
 };
