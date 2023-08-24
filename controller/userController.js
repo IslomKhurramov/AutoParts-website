@@ -1,4 +1,6 @@
 const Member = require("../models/Member");
+const Product = require("../models/Product");
+
 let userController = module.exports;
 
 userController.getUserProducts = async (req, res) => {
@@ -6,7 +8,10 @@ userController.getUserProducts = async (req, res) => {
     console.log("GET cont.getUserProducts");
     //todo:get user data
 
-    res.render("user-products");
+    const product = new Product();
+    const result = await product.getUserProductsData(res.locals.member);
+
+    res.render(`user-products`, { user_data: result });
   } catch (err) {
     console.log("ERROR: cont.getUserProducts", err.message);
     res.json({ state: "fail", message: err.message });

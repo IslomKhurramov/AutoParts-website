@@ -8,6 +8,20 @@ class Product {
     this.productModel = ProductModel;
   }
 
+  async getUserProductsData(member) {
+    try {
+      member._id = shapeIntoMongosObjectId(member._id);
+      const result = await this.productModel.find({
+        user_mb_id: member._id,
+      });
+      assert.ok(result, Definer.general_err1);
+      console.log(result);
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async addNewProductData(data, user) {
     try {
       //   console.log(data);
