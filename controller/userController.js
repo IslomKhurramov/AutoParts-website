@@ -70,6 +70,17 @@ userController.logout = (req, res) => {
   res.send("logout page");
 };
 
+userController.validateAuthUser = (req, res, next) => {
+  if (req.session?.member?.mb_type === "USER") {
+    req.member = req.session.member;
+    next();
+  } else
+    res.json({
+      state: "fail",
+      message: "only authenticated members with user type",
+    });
+};
+
 userController.checkSessions = (req, res) => {
   if (req.session?.member) {
     res.json({ state: "succeed", data: req.session.member });
