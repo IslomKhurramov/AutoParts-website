@@ -3,6 +3,16 @@ const Product = require("../models/Product");
 
 let userController = module.exports;
 
+userController.home = (req, res) => {
+  try {
+    console.log("GET: cont/home");
+    res.render("home-page");
+  } catch (err) {
+    console.log("ERROR, cont/home", err.message);
+    res.json({ state: "fail", message: err.message });
+  }
+};
+
 userController.getUserProducts = async (req, res) => {
   try {
     console.log("GET cont.getUserProducts");
@@ -21,7 +31,7 @@ userController.getUserProducts = async (req, res) => {
 userController.getSignUpMyUserPage = async (req, res) => {
   try {
     console.log("GET cont.getSignUpMyUserPage");
-    res.render("signup");
+    res.render("sign-up");
   } catch (err) {
     console.log("ERROR: cont.getSignUpMyUserPage", err.message);
     res.json({ state: "fail", message: err.message });
@@ -30,7 +40,7 @@ userController.getSignUpMyUserPage = async (req, res) => {
 
 userController.signupProcess = async (req, res) => {
   try {
-    console.log("POST cont.signup");
+    console.log("POST cont.signupProcess");
     const data = req.body;
     const member = new Member();
     const new_member = await member.signupData(data);
@@ -38,7 +48,7 @@ userController.signupProcess = async (req, res) => {
     req.session.member = new_member;
     res.redirect("/resto/products/user");
   } catch (err) {
-    console.log("ERROR: cont.signup", err.message);
+    console.log("ERROR: cont.signupProcess", err.message);
     res.json({ state: "fail", message: err.message });
   }
 };
@@ -55,17 +65,19 @@ userController.getLoginMyUserPage = async (req, res) => {
 
 userController.loginProcess = async (req, res) => {
   try {
-    console.log("POST: cont/login");
+    console.log("POST: cont/loginProcess");
     const data = req.body;
     const member = new Member();
     const result = await member.loginData(data);
 
     req.session.member = result;
     req.session.save(function () {
-      res.redirect("/resto/products/user");
+      result.mb_type === "ADMIN"
+        ? res.redirect("/resto/all-users")
+        : res.redirect("/resto/products/user");
     });
   } catch (err) {
-    console.log(`ERROR, cont/login`);
+    console.log(`ERROR, cont/loginProcess`);
     res.json({ state: "fail", message: err.message });
   }
 };

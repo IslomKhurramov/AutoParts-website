@@ -1,7 +1,181 @@
 <%- include('includes/header') %>
-
+<link rel="stylesheet" type="text/css" href="/css/login.css" />
+<!-- <link rel="stylesheet" type="text/css" href="/css/login.css" /> -->
 <body>
-  signup
+  <!-- multipart/form-data bu imageni ham ichkariga qushib yuborish mantigi -->
+  <form
+    onsubmit="return validateSignUpForm()"
+    class="login_container"
+    action="/resto/sign-up"
+    method="POST"
+    enctype="multipart/form-data">
+    <div class="login_frame" style="width: 650px">
+      <div class="login_top">
+        <span>Sign Up</span>
+        <div>Home Page <a href="/resto" style="color: #6440fb">Home</a></div>
+        <p>
+          Already Registered?
+          <a href="/resto/login" style="color: #6440fb">Login</a>
+        </p>
+      </div>
+
+      <div>
+        <div class="sign_input_frame">
+          <div class="signup_frame">
+            <label>Username</label>
+            <input
+              name="mb_nick"
+              class="mb_nick"
+              type="text"
+              placeholder="Foydalanuvchining ismi"
+              value=""
+              required />
+          </div>
+          <div class="signup_frame">
+            <label>Phonenumber</label>
+            <input
+              name="mb_phone"
+              class="mb_phone"
+              type="text"
+              placeholder="Phonenumber"
+              value=""
+              required />
+          </div>
+        </div>
+        <div>
+          <div class="signup_frame">
+            <label>Address</label>
+            <input
+              name="mb_address"
+              class="mb_address"
+              type="text"
+              placeholder="Address"
+              value=""
+              required />
+          </div>
+          <div class="signup_frame">
+            <label>Description</label>
+            <input
+              name="mb_description"
+              class="mb_description"
+              type="text"
+              placeholder="Description"
+              value=""
+              required />
+          </div>
+        </div>
+      </div>
+
+      <div class="sign_input_frame">
+        <div class="signup_frame">
+          <label>Password</label>
+          <input
+            name="mb_password"
+            class="mb_password"
+            type="password"
+            placeholder="Password"
+            value=""
+            required />
+        </div>
+        <div class="signup_frame">
+          <label>Confirm Password</label>
+          <input
+            name="mb_confirm_password"
+            type="password"
+            class="mb_confirm_password"
+            placeholder="Confirm Password"
+            value=""
+            required />
+        </div>
+      </div>
+
+      <div class="login_input_frame">
+        <div class="media_frame">
+          <img class="upload_image_frame" src="/images/default_article.png" />
+          <div class="upload_container">
+            <span class="media_text">User Image</span>
+            <div class="filebox bs3-primary preview-image">
+              <input
+                class="upload-name"
+                value="Rasmni tanlang"
+                disabled="disabled" />
+              <label for="input_file">Upload Image</label>
+              <input
+                type="file"
+                name="restaurant_img"
+                id="input_file"
+                class="upload-hidden form-control-file restaurant_img" />
+            </div>
+            <p class="thumbnail_desc">
+              Upload Here <br />Only .jpg, .jpeg, and .png <br />
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <button class="login_btn btn" name="signup" type="submit">Sign Up</button>
+    </div>
+  </form>
+
+  <script>
+    $(function () {
+      let fileTarget = $(`.filebox .upload-hidden`);
+      let filename = "";
+      fileTarget.on("change", function () {
+        if (window.FileReader) {
+          ///////////////////
+          const uploading_file = $(this)[0].files[0]; /////////////
+          const fileType = uploading_file["type"];
+          const validImagesTypes = ["image/jpeg", "image/jpg", "image/png"];
+          if (!validImagesTypes.includes(fileType)) {
+            alert(
+              "Iltimos ruhsat etilgan formatdagi rasmlarni yuklang: jpg, jpeg, png"
+            );
+          } else {
+            if (uploading_file) {
+              console.log(URL.createObjectURL(uploading_file)); ////////
+              $(".upload_image_frame")
+                .attr("src", URL.createObjectURL(uploading_file)) /////////
+                .addClass("success"); ///////////////
+            }
+            filename = $(this)[0].files[0].name; ////////////
+            console.log(filename);
+          }
+        }
+
+        $(this).siblings(".upload-name").val(filename); ////////////////
+      });
+    });
+
+    function validateSignUpForm() {
+      const mb_nick = $(".mb_nick").val();
+      const mb_phone = $(".mb_phone").val();
+      const mb_password = $(".mb_password").val();
+      const mb_confirm_password = $(".mb_confirm_password").val();
+      const restaurant_img = $(".restaurant_img").get(0).files[0] ?? null;
+
+      if (
+        mb_nick == "" ||
+        mb_phone == "" ||
+        mb_address == "" ||
+        mb_password == "" ||
+        mb_confirm_password == ""
+      ) {
+        alert(`Iltimos hamma malumotni kiriting!`);
+        return false;
+      } else if (mb_password !== mb_confirm_password) {
+        alert("Iltimos passwordni to'gri kiriting");
+        return false;
+      }
+
+      if (!restaurant_img) {
+        alert("Iltimos rasmni yuklang!");
+        return false;
+      }
+
+      return true;
+    }
+  </script>
 </body>
 
 <%- include('includes/footer') %>

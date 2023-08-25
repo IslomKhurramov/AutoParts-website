@@ -7,10 +7,11 @@ const uploader_product = require("./utils/upload-multer")("products");
 /***********************
  *      BSSR EJS
  ***********************/
+router_bssr.get("/", userController.home);
 
 router_bssr
-  .get("/signup", userController.getSignUpMyUserPage)
-  .post("/signup", userController.signupProcess);
+  .get("/sign-up", userController.getSignUpMyUserPage)
+  .post("/sign-up", userController.signupProcess);
 router_bssr
   .get("/login", userController.getLoginMyUserPage)
   .post("/login", userController.loginProcess);
