@@ -102,7 +102,7 @@
               <label for="input_file">Upload Image</label>
               <input
                 type="file"
-                name="restaurant_img"
+                name="user_img"
                 id="input_file"
                 class="upload-hidden form-control-file restaurant_img" />
             </div>
@@ -150,6 +150,7 @@
     function validateSignUpForm() {
       const mb_nick = $(".mb_nick").val();
       const mb_phone = $(".mb_phone").val();
+      const mb_address = $(".mb_address").val();
       const mb_password = $(".mb_password").val();
       const mb_confirm_password = $(".mb_confirm_password").val();
       const restaurant_img = $(".restaurant_img").get(0).files[0] ?? null;

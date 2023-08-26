@@ -1,5 +1,7 @@
 const Member = require("../models/Member");
 const Product = require("../models/Product");
+const assert = require("assert");
+const Definer = require("../lib/mistake");
 
 let userController = module.exports;
 
@@ -41,7 +43,12 @@ userController.getSignUpMyUserPage = async (req, res) => {
 userController.signupProcess = async (req, res) => {
   try {
     console.log("POST cont.signupProcess");
+    assert(req.file, Definer.general_err3);
+
     const data = req.body;
+    data.mb_type = "USER";
+    data.mb_image = req.file.path;
+
     const member = new Member();
     const new_member = await member.signupData(data);
 
