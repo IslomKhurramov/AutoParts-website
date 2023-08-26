@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const {
   product_collection_enums,
   product_status_enums,
+  product_price_enums,
 } = require("../lib/config");
 const Schema = mongoose.Schema;
 
@@ -29,6 +30,15 @@ const productSchema = new mongoose.Schema(
     product_price: {
       type: Number,
       required: true,
+    },
+    product_price_status: {
+      type: String,
+      required: false,
+      default: "KRW",
+      enum: {
+        values: product_price_enums,
+        message: "{VALUE} is not among permitted enum values",
+      },
     },
     product_discount: {
       type: Number,

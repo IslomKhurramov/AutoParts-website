@@ -1,7 +1,276 @@
 <%- include('includes/header') %>
 
+<link rel="stylesheet" type="text/css" href="/css/products.css" />
+
 <body>
-  user-data
+  <div id="main_container">
+    <div class="group_name">
+      <ul class="nav justify-content-center">
+        <li class="nav-item" style="cursor: pointer">
+          <a class="nav-link active" href="/resto">Home</a>
+        </li>
+
+        <li class="nav-item" style="cursor: pointer">
+          <a class="nav-link" href="/resto/products/user">Products</a>
+        </li>
+        <li class="nav-item" style="cursor: pointer">
+          <a class="nav-link" href="/resto/logout">Logout</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="restaurant_menu_frame">
+      <div class="restaurant_container">
+        <div class="dishs_table">
+          <span class="new_dish_txt"
+            ><%= member.mb_nick.toUpperCase() %>'s Products</span
+          >
+          <table class="table table-bordered table-hover">
+            <thead class="thead-light">
+              <th class="scope">T/r</th>
+              <th class="scope">Poduct name</th>
+              <th class="scope">Product type</th>
+              <th class="scope">Product price</th>
+              <th class="scope">Product quantity</th>
+              <th class="scope">Product status</th>
+            </thead>
+            <% user_data.map((value, key) => { %>
+
+              <tbody style="background: white">
+                <td><%= key + 1 %></td>
+                <td ><%= value.product_name %></td>
+                <td><%= value.product_collection%></td>
+                <td><%= value.product_price %><span> 
+                  <select class="spec_select new_product_price_status" id="<%= value._id %>">
+                  <option value="KRW" <%= value.product_price_status === 'KRW' ? 'selected' : '' %> >KRW</option>
+                  <option value="USD" <%= value.product_price_status === 'USD' ? 'selected' : '' %> >USD</option>
+                </select>
+              </span></td>
+                <td style="display: flex; flex-direction: row; justify-content: space-between;">
+                  <span style="cursor: pointer;" class="minus">-</span>
+                  <span class="num"><%= value.product_left_cnt %></span>
+                  <span class="plus" style="cursor: pointer;">+</span> 
+                  <span>
+                    <button 
+                  class="edit_btn" style="border-style: none;">Save</button>
+                </span>
+              </td>
+                <td>
+                  <select class="spec_select new_product_status" id="<%= value._id %>">
+                    <option value="PAUSED" <%= value.product_status === 'PAUSED' ? 'selected' : '' %> >PAUSED</option>
+                    <option value="PROCESS" <%= value.product_status === 'PROCESS' ? 'selected' : '' %> >PROCESS</option>
+                  </select>
+                </td>
+              </tbody>
+            <% }); %>
+          </table>
+          <div class="long_input" style="align-items: flex-end; margin-bottom: 25px;">
+            <button class="btn btn-primary hiding_btn" >Add Product</button>
+          </div>
+        </div>
+
+        <form onsubmit="return validateForm()" action="/resto/products/create" method="POST" 
+          class="dish_container" enctype="multipart/form-data">
+        
+          <div class="long_input" style="align-items: center; display: flex;">
+            <span class="new_dish_txt">New Product</span>
+          </div>
+
+          <div>
+            <div class="long_input">
+              <label >Product name</label>
+              <input type="text" placeholder="Product name" name="product_name" class="product_name">
+            </div>
+            <input  name="product_status" value="PROCESS" hidden>
+          </div>
+
+          <div class="half_input_frame">
+            <div class="half_input">
+              <label >Product price</label>
+              <input type="number" placeholder="Product price" name="product_price" class="product_price">
+            </div>
+            <div class="half_input">
+              <label >Currency</label>
+              <select name="product_price_status" class="product_price_status" >
+                <option value="KRW" selected>KRW</option>
+                <option value="USD">USD</option>
+                
+              </select>     
+            </div>
+          </div>
+
+          <div class="half_input_frame">
+            <div class="half_input">
+              <label >Product type</label>
+              <select name="product_collection" class="product_collection" >
+                <option value="Body Components" selected>Body Components</option>
+                <option value="Bumpers">Bumpers</option>
+                <option value="Electrical">Electrical</option>
+                <option value="Heating">Heating</option>
+                <option value="Lighting">Lighting</option>
+                <option value="Hardware">Hardware</option>
+                <option value="Interior">Interior</option>
+                <option value="Transmission">Transmission</option>
+              </select>            
+            </div>
+            <div class="half_input">
+              <label >Product quantity</label>
+              <input type="number" placeholder="Product quantity" name="product_left_cnt" class="product_left_cnt">
+            </div>
+           
+          </div>
+
+          <div class="long_input">
+            <label>Description</label>
+            <textarea name="product_description" class="product_description"></textarea>
+          </div>
+
+          <div class="img_frame">
+            <label>Product images</label>
+            <div class="media_frame">
+              <div class="upload_img_box">
+                <img src="/images/upload.png" class="1" id="image_section_1">
+                <input type="file" name="product_images" id="file" class="image_one"
+                onchange="previewFileHandler(this,1)">
+              </div>
+              <div class="upload_img_box">
+                <img src="/images/upload.png" class="2" id="image_section_2">
+                <input type="file" name="product_images" id="file" class="image_two"
+                onchange="previewFileHandler(this,2)">
+              </div>
+              <div class="upload_img_box">
+                <img src="/images/upload.png" class="3" id="image_section_3">
+                <input type="file" name="product_images" id="file" class="image_three"
+                onchange="previewFileHandler(this,3)">
+              </div>
+              <div class="upload_img_box">
+                <img src="/images/upload.png" class="4" id="image_section_4">
+                <input type="file" name="product_images" id="file" class="image_four"
+                onchange="previewFileHandler(this,4)">
+              </div>
+              <div class="upload_img_box">
+                <img src="/images/upload.png" class="5" id="image_section_5">
+                <input type="file" name="product_images" id="file" class="image_five"
+                onchange="previewFileHandler(this,5)">
+              </div>
+              <input  name="user_id" id="user_id" value="<%= member._id%>" hidden>
+            </div>
+          </div>
+
+
+          <div class="long_input" style="align-items: flex-end; margin-bottom: 25px;">
+            <button type="submit" class="btn btn-primary" id="create_product">Chop Etish</button>
+          </div>
+
+        </form>
+
+
+      </div>
+    </div>
+  </div>
+
+  <script >
+    $(function (){
+      
+      $(".hiding_btn").on("click", ()=>{
+        $(".dish_container").slideToggle(500);
+        $(".hiding_btn").css("display","none");
+      })
+
+      //product status changer
+      $(".new_product_status").on("change", async function(event){
+        const id=event.target.id;
+        const product_status=$(`#${id}.new_product_status`).val();
+
+        try{
+          const url=`/resto/products/edit/${id}`
+          const response=await axios.post(url, {id:id, product_status:product_status});
+          const result=response.data;
+          console.log("result::::", result);
+          if(result.state=="succeed"){
+            alert("succeed");
+            location.reload();
+          }else{
+            alert(result.message);
+          }
+        }catch(err){
+          console.log("UpdateChosenProduct err:",err)
+        }
+      })
+      //product status changer
+      $(".new_product_price_status").on("change", async function(event){
+        const id=event.target.id;
+        const product_price_status=$(`#${id}.new_product_price_status`).val();
+
+        try{
+          const url=`/resto/products/edit/${id}`
+          const response=await axios.post(url, {id:id, product_price_status:product_price_status});
+          const result=response.data;
+          console.log("result::::", result);
+          if(result.state=="succeed"){
+            alert("succeed");
+            location.reload();
+          }else{
+            alert(result.message);
+          }
+        }catch(err){
+          console.log("UpdateChosenProduct err:",err)
+        }
+      })
+    });
+
+    // const plus=document.querySelector(".plus"),
+    // minus=document.querySelector(".minus"),
+    // num=document.querySelector(".num");
+
+    // console.log(user_data.product_left_cnt.val())
+    // let a = value?.product_left_cnt.val();
+    // plus.addEventListener("click", ()=>{
+    //   a++;
+    //   // a=(a<10) ? "0" + a: a;
+    //   num.innerText=a;
+    //   console.log(num)
+    // });
+
+ 
+
+    function validateForm(){
+      const user_id=$(".user_id").val();
+      const product_name=$(".product_name").val();
+      const product_price=$(".product_price").val();
+      const product_left_cnt=$(".product_left_cnt").val();
+      const product_description=$(".product_description").val();
+      const product_status=$(".product_status").val();
+      const product_collection=$(".product_collection").val();
+
+
+      if(user_id==''||product_name==''||product_price==""||product_left_cnt==""||product_collection==''||product_description==""||product_status==""){
+        alert("Iltimos hamma malumotlarni kiriting!");
+        return false;
+      }else return true;
+    }
+
+    function previewFileHandler(input, order){
+      console.log(input);
+      const image_class_name=input.className;
+      // console.log("classname:", className);
+      const file=$(`.${image_class_name}`).get(0).files[0],
+      fileType=file["type"],
+      validImageTypes=["image/jpg","image/jpeg","image/png"];
+
+      if(!validImageTypes.includes(fileType)){
+        alert("Iltimos ruxsat etilgan rasm formatlaridan foydalaning: (jpg, jpeg, png)");
+      }else{
+        if(file){
+          let reader=new FileReader();
+          reader.onload=function(){
+            $(`#image_section_${order}`).attr("src", reader.result);
+          }
+          reader.readAsDataURL(file);
+        }
+      }
+    }
+  </script>
 </body>
 
 <%- include('includes/footer') %>

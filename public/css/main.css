@@ -1,0 +1,100 @@
+html,
+body {
+  height: 100%;
+  background: linear-gradient(-45deg, #110303, #c10303, #011c1a, #ffffff);
+  animation: gradient 15s ease infinite;
+  -webkit-animation: gradient 15s ease infinite;
+  background-size: 200% 200%;
+}
+
+#main_container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(-45deg, #110303, #c10303, #011c1a, #ffffff);
+  animation: gradient 15s ease infinite;
+  -webkit-animation: gradient 15s ease infinite;
+  background-size: 200% 200%;
+  align-items: center;
+}
+@-webkit-keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+a {
+  text-decoration: none;
+  color: #000000;
+}
+.nav-item a {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.nav-item a :disabled {
+  color: #898071;
+}
+.group_name {
+  position: absolute;
+  z-index: 10000;
+  top: 1%;
+  color: #efefee;
+  font-size: xx-large;
+  font-family: monospace;
+}
+
+.new_dish_txt {
+  font-family: "Source Serif Pro";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 25px;
+  color: #ffffff;
+  margin-bottom: 30px;
+}
+.restaurant_container .dish_container {
+  position: relative;
+  margin-top: 20px;
+  width: 100%;
+  height: auto;
+
+  display: none;
+  flex-direction: column;
+  align-items: center;
+}
+.long_input {
+  position: relative;
+  margin-top: 25px;
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+}
+.new_dish_txt {
+  font-family: "Source Serif Pro";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 25px;
+  color: #ffffff;
+}
