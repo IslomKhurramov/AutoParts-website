@@ -27,12 +27,20 @@ productController.addNewProduct = async (req, res) => {
     });
 
     const result = await product.addNewProductData(data, req.member);
-    const html = `<script>
-        alert('new dish added succesfully');
-        window.location.replace("/resto/products/user");
-        </script>`;
 
-    res.end(html);
+    if (req.member.mb_type === "USER") {
+      const html = `<script>
+          alert('new dish added succesfully');
+          window.location.replace("/resto/products/user");
+          </script>`;
+      res.end(html);
+    } else {
+      const html = `<script>
+          alert('new dish added succesfully');
+          window.location.replace("/resto/all-users");
+          </script>`;
+      res.end(html);
+    }
   } catch (err) {
     console.log("ERROR, cont/addNewProduct", err.message);
     res.json({ state: "fail", message: err.message });

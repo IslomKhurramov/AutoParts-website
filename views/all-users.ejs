@@ -35,7 +35,7 @@
                 </tr>
               </thead>
   
-              <% users_data.map(function(value, key){ %>
+              <% justin.map(function(value, key){ %>
               <tbody style="background: white">
                 <td><%= key +1 %></td>
                 <td><%= value.mb_nick %></td>
@@ -61,11 +61,154 @@
         </div>
       </div>
       
-      <li class="nav-item" style="cursor: pointer">
-        <a class="nav-link" href="/resto/products/user">Products</a>
-      </li>
-
+    
       
+    <div class="restaurant_menu_frame">
+      <div class="restaurant_container">
+        <div class="dishs_table">
+          <span class="new_dish_txt"
+            ><%= member.mb_nick.toUpperCase() %>'s Products</span
+          >
+          <table class="table table-bordered table-hover">
+            <thead class="thead-light">
+              <th class="scope">T/r</th>
+              <th class="scope">Poduct name</th>
+              <th class="scope">Product type</th>
+              <th class="scope">Product price</th>
+              <th class="scope">Product quantity</th>
+              <th class="scope">Product status</th>
+              <th class="scope"> </th>
+            </thead>
+            <% result.map((value, key) => { %>
+
+              <tbody class="new_product" id="<%= value._id %>" style="background: white">
+                <td><%= key + 1 %></td>
+                <td><span edit_type="click" class="row_data"><%= value.product_name %></span></td>
+                <td><%= value.product_collection%></td>
+                <td><span edit_type="click" class="row_data"><%= value.product_price %></span><span> 
+                  <select class="spec_select new_product_price_status" id="<%= value._id %>">
+                  <option value="KRW" <%= value.product_price_status === 'KRW' ? 'selected' : '' %> >KRW</option>
+                  <option value="USD" <%= value.product_price_status === 'USD' ? 'selected' : '' %> >USD</option>
+                </select>
+              </span></td>
+                <td><span edit_type="click" class="row_data"><%= value.product_left_cnt %></span></td>
+                <td >
+                  <select class="spec_select new_product_status" id="<%= value._id %>">
+                    <option value="PAUSED" <%= value.product_status === 'PAUSED' ? 'selected' : '' %> >PAUSED</option>
+                    <option value="PROCESS" <%= value.product_status === 'PROCESS' ? 'selected' : '' %> >PROCESS</option>
+                  </select>
+                </td>
+                <td >
+                  <button data-id="<%=value._id%>" class="save_btn" style="border-style: none;">Save</button>
+                  <button data-id="<%=value._id%>" class="edit_btn" style="border-style: none;">Edit</button>
+                    <button data-id="<%=value._id%>" class="cancel_btn" style="border-style: none;">Cancel</button>
+                </td>
+              </tbody>
+            <% }); %>
+          </table>
+          <div class="long_input" style="align-items: flex-end; margin-bottom: 25px;">
+            <button class="btn btn-primary hiding_btn" >Add Product</button>
+          </div>
+        </div>
+
+        <form onsubmit="return validateForm()" action="/resto/products/create" method="POST" 
+          class="dish_container" enctype="multipart/form-data">
+        
+          <div class="long_input" style="align-items: center; display: flex;">
+            <span class="new_dish_txt">New Product</span>
+          </div>
+
+          <div>
+            <div class="long_input">
+              <label >Product name</label>
+              <input type="text" placeholder="Product name" name="product_name" class="product_name">
+            </div>
+            <input  name="product_status" value="PROCESS" hidden>
+          </div>
+
+          <div class="half_input_frame">
+            <div class="half_input">
+              <label >Product price</label>
+              <input type="number" placeholder="Product price" name="product_price" class="product_price">
+            </div>
+            <div class="half_input">
+              <label >Currency</label>
+              <select name="product_price_status" class="product_price_status" >
+                <option value="KRW" selected>KRW</option>
+                <option value="USD">USD</option>
+                
+              </select>     
+            </div>
+          </div>
+
+          <div class="half_input_frame">
+            <div class="half_input">
+              <label >Product type</label>
+              <select name="product_collection" class="product_collection" >
+                <option value="Body Components" selected>Body Components</option>
+                <option value="Bumpers">Bumpers</option>
+                <option value="Electrical">Electrical</option>
+                <option value="Heating">Heating</option>
+                <option value="Lighting">Lighting</option>
+                <option value="Hardware">Hardware</option>
+                <option value="Interior">Interior</option>
+                <option value="Transmission">Transmission</option>
+              </select>            
+            </div>
+            <div class="half_input">
+              <label >Product quantity</label>
+              <input type="number" placeholder="Product quantity" name="product_left_cnt" class="product_left_cnt">
+            </div>
+           
+          </div>
+
+          <div class="long_input">
+            <label>Description</label>
+            <textarea name="product_description" class="product_description"></textarea>
+          </div>
+
+          <div class="img_frame">
+            <label>Product images</label>
+            <div class="media_frame">
+              <div class="upload_img_box">
+                <img src="/images/upload.png" class="1" id="image_section_1">
+                <input type="file" name="product_images" id="file" class="image_one"
+                onchange="previewFileHandler(this,1)">
+              </div>
+              <div class="upload_img_box">
+                <img src="/images/upload.png" class="2" id="image_section_2">
+                <input type="file" name="product_images" id="file" class="image_two"
+                onchange="previewFileHandler(this,2)">
+              </div>
+              <div class="upload_img_box">
+                <img src="/images/upload.png" class="3" id="image_section_3">
+                <input type="file" name="product_images" id="file" class="image_three"
+                onchange="previewFileHandler(this,3)">
+              </div>
+              <div class="upload_img_box">
+                <img src="/images/upload.png" class="4" id="image_section_4">
+                <input type="file" name="product_images" id="file" class="image_four"
+                onchange="previewFileHandler(this,4)">
+              </div>
+              <div class="upload_img_box">
+                <img src="/images/upload.png" class="5" id="image_section_5">
+                <input type="file" name="product_images" id="file" class="image_five"
+                onchange="previewFileHandler(this,5)">
+              </div>
+              <input  name="user_id" id="user_id" value="<%= member._id%>" hidden>
+            </div>
+          </div>
+
+
+          <div class="long_input" style="align-items: flex-end; margin-bottom: 25px;">
+            <button type="submit" class="btn btn-primary" id="create_product">Chop Etish</button>
+          </div>
+
+        </form>
+
+
+      </div>
+    </div>
     </div>
 
     
@@ -100,7 +243,67 @@
 
       /******************************************/
       $(function (){
-      
+
+     $(document).find(".save_btn").hide();
+     $(document).find(".cancel_btn").hide();
+
+     //make spin editable
+
+     $(document).on("click", ".edit_btn", function(event){
+      event.preventDefault();
+      let tbl_row=$(this).closest("tbody");
+      let row_id = tbl_row.attr("row_id");
+
+      $(tbl_row).find(".save_btn").show();
+     $(tbl_row).find(".cancel_btn").show();
+     $(tbl_row).find(".edit_btn").hide();
+
+
+      $(tbl_row).find('.row_data').attr("contenteditable", "true").attr("edit_type", 'button').addClass(' mb-2 bg-info text-white ').css('padding','3px');
+     })
+
+      ///////////////////////////////////
+      //cancel btn
+      $(document).on("click", ".cancel_btn", function(event){
+      event.preventDefault();
+      let tbl_row=$(this).closest("tbody");
+      let row_id = tbl_row.attr("row_id");
+
+      $(tbl_row).find(".save_btn").hide();
+     $(tbl_row).find(".cancel_btn").hide();
+     $(tbl_row).find(".edit_btn").show();
+
+
+      $(tbl_row).find('.row_data').removeAttr("contenteditable").attr("edit_type", 'click').removeClass(' mb-2 bg-info text-white ').css('padding','');
+     })
+     ///////////////////////////////////////
+     //save btn
+     $(document).on("click",".save_btn", async function(event){
+        const id=event.target.id;
+        const product_status=$(`#${id}.new_product`).val();
+        $(document).find(".save_btn").hide();
+     $(document).find(".cancel_btn").hide();
+     $(document).find(".edit_btn").show();
+
+
+      $(document).find('.row_data').removeAttr("contenteditable").attr("edit_type", 'click').removeClass(' mb-2 bg-info text-white ').css('padding','');
+        try{
+          const url=`/resto/products/edit/${id}`
+          const response=await axios.post(url, {id:product_status});
+          const result=response.data;
+          // console.log("result::::", result);
+          if(result.state=="succeed"){
+            alert("succeed");
+            location.reload();
+          }else{
+            alert(result.message);
+          }
+        }catch(err){
+          console.log("UpdateChosenProduct err:",err)
+        }
+      })
+
+
       $(".hiding_btn").on("click", ()=>{
         $(".dish_container").slideToggle(500);
         $(".hiding_btn").css("display","none");
@@ -201,6 +404,15 @@
 
 
       /*******************************************/
+
+      document.addEventListener("click", function(e){
+        let userInput = prompt("Add new name!", e.target.parentElement.parentElement.parentElement.querySelector(".inner-text").innerHTML);
+        if(userInput){
+          
+        }
+      })
+
+
     </script>
 </body>
 

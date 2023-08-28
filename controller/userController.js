@@ -24,7 +24,11 @@ userController.getUserProducts = async (req, res) => {
     const product = new Product();
     const result = await product.getUserProductsData(res.locals.member);
 
-    res.render(`user-products`, { user_data: result });
+    if (res.locals.member.mb_type === "ADMIN") {
+      res.render(`all-users`, { user_data: result });
+    } else {
+      res.render(`user-products`, { user_data: result });
+    }
   } catch (err) {
     console.log("ERROR: cont.getUserProducts", err.message);
     res.json({ state: "fail", message: err.message });
@@ -143,7 +147,11 @@ userController.getAllUsers = async (req, res) => {
 
     const user = new User();
     const users_data = await user.getAllUsersData();
-    res.render("all-users", { users_data: users_data });
+
+    const product = new Product();
+    const result = await product.getAdminProductsData(res.locals.member);
+
+    res.render("all-users", { result: result, justin: users_data });
   } catch (err) {
     console.log(`ERROR, cont/getAllUsers, ${err.message}`);
     res.json({ state: "fail", message: err.message });
@@ -161,3 +169,22 @@ userController.updateUserByAdmin = async (req, res) => {
     res.json({ state: "fail", message: err.message });
   }
 };
+
+// userController.getAdminProducts = async (req, res) => {
+//   try {
+//     console.log("GET cont.getAdminProducts");
+//     //todo:get user data
+
+//     const product = new Product();
+//     const result = await product.getAdminProductsData(res.locals.member);
+
+//     const user = new User();
+//     const users_data = await user.getAllUsersData();
+
+//     console.log("++++++++++", result);
+//     res.render(`all-users`, { result: result, justin: users_data });
+//   } catch (err) {
+//     console.log("ERROR: cont.getAdminProducts", err.message);
+//     res.json({ state: "fail", message: err.message });
+//   }
+// };
