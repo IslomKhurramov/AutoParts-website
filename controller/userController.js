@@ -2,6 +2,7 @@ const Member = require("../models/Member");
 const Product = require("../models/Product");
 const assert = require("assert");
 const Definer = require("../lib/mistake");
+const User = require("../models/User");
 
 let userController = module.exports;
 
@@ -90,12 +91,22 @@ userController.loginProcess = async (req, res) => {
 };
 
 userController.logout = (req, res) => {
-  console.log("GET cont.logout");
-  res.send("logout page");
+  try {
+    console.log("GET cont.logout");
+    req.session.destroy(function () {
+      res.redirect("/resto");
+    });
+  } catch (err) {
+    console.log(`ERROR, cont/logout`);
+    res.json({ state: "fail", message: err.message });
+  }
 };
 
 userController.validateAuthUser = (req, res, next) => {
-  if (req.session?.member?.mb_type === "USER") {
+  if (
+    req.session?.member?.mb_type === "USER" ||
+    req.session?.member?.mb_type === "ADMIN"
+  ) {
     req.member = req.session.member;
     next();
   } else
@@ -110,5 +121,43 @@ userController.checkSessions = (req, res) => {
     res.json({ state: "succeed", data: req.session.member });
   } else {
     res.json({ state: "fail", message: "you are not authenticated" });
+  }
+};
+
+userController.validateAdmin = (req, res, next) => {
+  if (req.session?.member?.mb_type === "ADMIN") {
+    req.member = req.session.member;
+
+    next();
+  } else {
+    const html = `<script>
+             alert("Admin page: Permission denied!");
+             window.location.replace("/resto");
+          </script>`;
+    res.end(html);
+  }
+};
+userController.getAllUsers = async (req, res) => {
+  try {
+    console.log("GET: cont/getAllUsers");
+
+    const user = new User();
+    const users_data = await user.getAllUsersData();
+    res.render("all-users", { users_data: users_data });
+  } catch (err) {
+    console.log(`ERROR, cont/getAllUsers, ${err.message}`);
+    res.json({ state: "fail", message: err.message });
+  }
+};
+userController.updateUserByAdmin = async (req, res) => {
+  try {
+    console.log("GET: cont/updateUserByAdmin");
+
+    const user = new User();
+    const result = await user.updateUserByAdminData(req.body);
+    await res.json({ state: "success", data: result });
+  } catch (err) {
+    console.log(`ERROR, cont/updateUserByAdmin, ${err.message}`);
+    res.json({ state: "fail", message: err.message });
   }
 };

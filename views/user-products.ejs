@@ -219,18 +219,17 @@
       })
     });
 
-    // const plus=document.querySelector(".plus"),
-    // minus=document.querySelector(".minus"),
-    // num=document.querySelector(".num");
+    const plus=document.querySelector(".plus"),
+    minus=document.querySelector(".minus"),
+     num=$(".num").val();
 
-    // console.log(user_data.product_left_cnt.val())
-    // let a = value?.product_left_cnt.val();
-    // plus.addEventListener("click", ()=>{
-    //   a++;
-    //   // a=(a<10) ? "0" + a: a;
-    //   num.innerText=a;
-    //   console.log(num)
-    // });
+    console.log(num)
+    plus.addEventListener("click", ()=>{
+      num++;
+      a=(a<10) ? "0" + a: a;
+      num.innerText=a;
+      console.log(num)
+    });
 
  
 

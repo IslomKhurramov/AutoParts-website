@@ -62,6 +62,13 @@ a {
   font-size: xx-large;
   font-family: monospace;
 }
+.product_name {
+  position: absolute;
+  z-index: 10000;
+  color: #efefee;
+  font-size: xx-large;
+  font-family: monospace;
+}
 
 .new_dish_txt {
   font-family: "Source Serif Pro";

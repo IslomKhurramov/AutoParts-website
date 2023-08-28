@@ -38,4 +38,16 @@ router_bssr.post(
   productController.editChosenProduct
 );
 
+router_bssr.get(
+  "/all-users",
+  userController.validateAdmin,
+  userController.getAllUsers
+);
+
+router_bssr.post(
+  "/all-users/edit",
+  userController.validateAdmin,
+  userController.updateUserByAdmin
+);
+
 module.exports = router_bssr;
