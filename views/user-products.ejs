@@ -33,33 +33,31 @@
               <th class="scope">Product price</th>
               <th class="scope">Product quantity</th>
               <th class="scope">Product status</th>
+              <th class="scope"> </th>
             </thead>
             <% user_data.map((value, key) => { %>
 
-              <tbody style="background: white">
+              <tbody class="new_product" id="<%= value._id %>" style="background: white">
                 <td><%= key + 1 %></td>
-                <td ><%= value.product_name %></td>
+                <td name="product_name" data-field="product_name"  edit_type="click" class="row_data"><%= value.product_name %></td>
                 <td><%= value.product_collection%></td>
-                <td><%= value.product_price %><span> 
+                <td><span id="<%= value._id %>" name="product_price" data-field="product_price"  edit_type="click" class="row_data"><%= value.product_price %></span><span> 
                   <select class="spec_select new_product_price_status" id="<%= value._id %>">
                   <option value="KRW" <%= value.product_price_status === 'KRW' ? 'selected' : '' %> >KRW</option>
                   <option value="USD" <%= value.product_price_status === 'USD' ? 'selected' : '' %> >USD</option>
                 </select>
               </span></td>
-                <td style="display: flex; flex-direction: row; justify-content: space-between;">
-                  <span style="cursor: pointer;" class="minus">-</span>
-                  <span class="num"><%= value.product_left_cnt %></span>
-                  <span class="plus" style="cursor: pointer;">+</span> 
-                  <span>
-                    <button 
-                  class="edit_btn" style="border-style: none;">Save</button>
-                </span>
-              </td>
-                <td>
+                <td name="product_left_cnt" id="<%= value._id %>" data-field="product_left_cnt" edit_type="click" class="row_data"><%= value.product_left_cnt %></td>
+                <td >
                   <select class="spec_select new_product_status" id="<%= value._id %>">
                     <option value="PAUSED" <%= value.product_status === 'PAUSED' ? 'selected' : '' %> >PAUSED</option>
                     <option value="PROCESS" <%= value.product_status === 'PROCESS' ? 'selected' : '' %> >PROCESS</option>
                   </select>
+                </td>
+                <td >
+                  <button id="<%=value._id%>" class="save_btn" style="border-style: none;">Save</button>
+                  <button id="<%=value._id%>" class="edit_btn" style="border-style: none;">Edit</button>
+                    <button id="<%=value._id%>" class="cancel_btn" style="border-style: none;">Cancel</button>
                 </td>
               </tbody>
             <% }); %>
@@ -171,6 +169,86 @@
 
   <script >
     $(function (){
+      $(document).find(".save_btn").hide();
+     $(document).find(".cancel_btn").hide();
+
+     //make spin editable
+
+     $(document).on("click", ".edit_btn", function(event){
+      const id = event.target.id
+          console.log("save", id)
+      event.preventDefault();
+      let tbl_row=$(this).closest("tbody");
+      const editableCells = tbl_row.find(".row_data");
+
+editableCells.each(function () {
+    const field = $(this).data("field");
+    const value = $(this).text();
+    $(this).html(`<input type="" class="edit-input" value="${value}" data-field="${field}">`);
+});
+
+      $(tbl_row).find(".save_btn").show();
+     $(tbl_row).find(".cancel_btn").show();
+     $(tbl_row).find(".edit_btn").hide();
+
+
+     })
+
+      ///////////////////////////////////
+      //cancel btn
+      $(document).on("click", ".cancel_btn", function(event){
+      event.preventDefault();
+      let tbl_row=$(this).closest("tbody");
+      const editableCells = tbl_row.find(".row_data");
+
+            editableCells.each(function () {
+                const field = $(this).data("field");
+                const value = $(this).find(".edit-input").attr("value");
+                $(this).html(value);
+            });
+      
+
+      $(tbl_row).find(".save_btn").hide();
+     $(tbl_row).find(".cancel_btn").hide();
+     $(tbl_row).find(".edit_btn").show();
+
+
+     })
+     ///////////////////////////////////////
+     //save btn
+     $('.save_btn').on('click', async function(e){
+          const id = e.target.id
+          console.log("save", id)
+          const updatedData = {};
+          const row = $(this).closest("tbody");
+          const editableCells = row.find(".row_data");
+
+         editableCells.each(function () {
+        const field = $(this).data("field");
+        const newValue = $(this).find(".edit-input").val();
+        updatedData[field] = newValue;
+        $(this).html(newValue); // Update the cell with the new value
+    });
+       
+        //  console.log(product_name);
+         try{
+        const response = await axios.post(`/resto/products/edit/${id}`, updatedData
+        );
+        const result = response.data;
+        // console.log( 'result::::'  ,result);
+
+        if(result.state == 'succeed') {
+          alert('succeed');
+          location.reload();
+        }else {
+          alert(result.message)
+        }
+
+      }catch (err) {
+        console.log('updateChosenProduct err:', err)
+      }
+    })
+
       
       $(".hiding_btn").on("click", ()=>{
         $(".dish_container").slideToggle(500);
