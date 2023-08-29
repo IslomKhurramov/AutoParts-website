@@ -83,15 +83,15 @@
 
               <tbody class="new_product" id="<%= value._id %>" style="background: white">
                 <td><%= key + 1 %></td>
-                <td><span edit_type="click" class="row_data"><%= value.product_name %></span></td>
+                <td name="product_name" data-field="product_name"  edit_type="click" class="row_data"><%= value.product_name %></td>
                 <td><%= value.product_collection%></td>
-                <td><span edit_type="click" class="row_data"><%= value.product_price %></span><span> 
+                <td><span id="<%= value._id %>" name="product_price" data-field="product_price"  edit_type="click" class="row_data"><%= value.product_price %></span><span> 
                   <select class="spec_select new_product_price_status" id="<%= value._id %>">
                   <option value="KRW" <%= value.product_price_status === 'KRW' ? 'selected' : '' %> >KRW</option>
                   <option value="USD" <%= value.product_price_status === 'USD' ? 'selected' : '' %> >USD</option>
                 </select>
               </span></td>
-                <td><span edit_type="click" class="row_data"><%= value.product_left_cnt %></span></td>
+                <td name="product_left_cnt" id="<%= value._id %>" data-field="product_left_cnt" edit_type="click" class="row_data"><%= value.product_left_cnt %></td>
                 <td >
                   <select class="spec_select new_product_status" id="<%= value._id %>">
                     <option value="PAUSED" <%= value.product_status === 'PAUSED' ? 'selected' : '' %> >PAUSED</option>
@@ -99,9 +99,9 @@
                   </select>
                 </td>
                 <td >
-                  <button data-id="<%=value._id%>" class="save_btn" style="border-style: none;">Save</button>
-                  <button data-id="<%=value._id%>" class="edit_btn" style="border-style: none;">Edit</button>
-                    <button data-id="<%=value._id%>" class="cancel_btn" style="border-style: none;">Cancel</button>
+                  <button id="<%=value._id%>" class="save_btn" style="border-style: none;">Save</button>
+                  <button id="<%=value._id%>" class="edit_btn" style="border-style: none;">Edit</button>
+                    <button id="<%=value._id%>" class="cancel_btn" style="border-style: none;">Cancel</button>
                 </td>
               </tbody>
             <% }); %>
@@ -250,16 +250,23 @@
      //make spin editable
 
      $(document).on("click", ".edit_btn", function(event){
+      const id = event.target.id
+          console.log("save", id)
       event.preventDefault();
       let tbl_row=$(this).closest("tbody");
-      let row_id = tbl_row.attr("row_id");
+      const editableCells = tbl_row.find(".row_data");
+
+editableCells.each(function () {
+    const field = $(this).data("field");
+    const value = $(this).text();
+    $(this).html(`<input type="" class="edit-input" value="${value}" data-field="${field}">`);
+});
 
       $(tbl_row).find(".save_btn").show();
      $(tbl_row).find(".cancel_btn").show();
      $(tbl_row).find(".edit_btn").hide();
 
 
-      $(tbl_row).find('.row_data').attr("contenteditable", "true").attr("edit_type", 'button').addClass(' mb-2 bg-info text-white ').css('padding','3px');
      })
 
       ///////////////////////////////////
@@ -267,41 +274,55 @@
       $(document).on("click", ".cancel_btn", function(event){
       event.preventDefault();
       let tbl_row=$(this).closest("tbody");
-      let row_id = tbl_row.attr("row_id");
+      const editableCells = tbl_row.find(".row_data");
+
+            editableCells.each(function () {
+                const field = $(this).data("field");
+                const value = $(this).find(".edit-input").attr("value");
+                $(this).html(value);
+            });
+      
 
       $(tbl_row).find(".save_btn").hide();
      $(tbl_row).find(".cancel_btn").hide();
      $(tbl_row).find(".edit_btn").show();
 
 
-      $(tbl_row).find('.row_data').removeAttr("contenteditable").attr("edit_type", 'click').removeClass(' mb-2 bg-info text-white ').css('padding','');
      })
      ///////////////////////////////////////
      //save btn
-     $(document).on("click",".save_btn", async function(event){
-        const id=event.target.id;
-        const product_status=$(`#${id}.new_product`).val();
-        $(document).find(".save_btn").hide();
-     $(document).find(".cancel_btn").hide();
-     $(document).find(".edit_btn").show();
+     $('.save_btn').on('click', async function(e){
+          const id = e.target.id
+          console.log("save", id)
+          const updatedData = {};
+          const row = $(this).closest("tbody");
+          const editableCells = row.find(".row_data");
 
+         editableCells.each(function () {
+        const field = $(this).data("field");
+        const newValue = $(this).find(".edit-input").val();
+        updatedData[field] = newValue;
+        $(this).html(newValue); // Update the cell with the new value
+    });
+       
+        //  console.log(product_name);
+         try{
+        const response = await axios.post(`/resto/products/edit/${id}`, updatedData
+        );
+        const result = response.data;
+        // console.log( 'result::::'  ,result);
 
-      $(document).find('.row_data').removeAttr("contenteditable").attr("edit_type", 'click').removeClass(' mb-2 bg-info text-white ').css('padding','');
-        try{
-          const url=`/resto/products/edit/${id}`
-          const response=await axios.post(url, {id:product_status});
-          const result=response.data;
-          // console.log("result::::", result);
-          if(result.state=="succeed"){
-            alert("succeed");
-            location.reload();
-          }else{
-            alert(result.message);
-          }
-        }catch(err){
-          console.log("UpdateChosenProduct err:",err)
+        if(result.state == 'succeed') {
+          alert('succeed');
+          location.reload();
+        }else {
+          alert(result.message)
         }
-      })
+
+      }catch (err) {
+        console.log('updateChosenProduct err:', err)
+      }
+    })
 
 
       $(".hiding_btn").on("click", ()=>{
@@ -332,6 +353,7 @@
       //product status changer
       $(".new_product_price_status").on("change", async function(event){
         const id=event.target.id;
+        console.log("++++++++",id)
         const product_price_status=$(`#${id}.new_product_price_status`).val();
 
         try{
@@ -405,12 +427,7 @@
 
       /*******************************************/
 
-      document.addEventListener("click", function(e){
-        let userInput = prompt("Add new name!", e.target.parentElement.parentElement.parentElement.querySelector(".inner-text").innerHTML);
-        if(userInput){
-          
-        }
-      })
+  
 
 
     </script>
