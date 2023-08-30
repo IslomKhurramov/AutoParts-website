@@ -25,6 +25,8 @@ router_bssr.get("/check-me", userController.checkSessions);
 
 router_bssr.get("/products/user", userController.getUserProducts);
 
+router_bssr.get("/products/users/:id", userController.getUserProductsInfo);
+
 router_bssr.post(
   "/products/create",
   userController.validateAuthUser,

@@ -37,8 +37,8 @@
   
               <% justin.map(function(value, key){ %>
               <tbody style="background: white">
-                <td><%= key +1 %></td>
-                <td><%= value.mb_nick %></td>
+                <td ><%= key +1 %></td>
+                <td class="username" id="<%= value._id %>"><%= value.mb_nick %></td>
                 <td><%= value.mb_phone %></td>
                 <td style="width: 13%">
                   <label class="switch">
@@ -256,7 +256,7 @@
       let tbl_row=$(this).closest("tbody");
       const editableCells = tbl_row.find(".row_data");
 
-editableCells.each(function () {
+    editableCells.each(function () {
     const field = $(this).data("field");
     const value = $(this).text();
     $(this).html(`<input type="" class="edit-input" value="${value}" data-field="${field}">`);
@@ -373,19 +373,22 @@ editableCells.each(function () {
       })
     });
 
-    const plus=document.querySelector(".plus"),
-    minus=document.querySelector(".minus"),
-     num=$(".num").val();
+    $(".username").on("click", async function(event){
+        const id=event.target.id;
+        console.log("++++++++",id)
+        try{
+          const response= await axios.get(`/resto/products/users/${id}`);
+          if(response){
 
-    console.log(num)
-    plus.addEventListener("click", ()=>{
-      num++;
-      a=(a<10) ? "0" + a: a;
-      num.innerText=a;
-      console.log(num)
-    });
-
- 
+            window.location.href=`/resto/products/users/${id}`;
+          }else{
+            alert(response.data.message);
+          }
+        }catch(err){
+          console.log("UpdateChosenProduct err:",err)
+        }
+    
+    })
 
     function validateForm(){
       const user_id=$(".user_id").val();

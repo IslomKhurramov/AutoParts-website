@@ -265,3 +265,7 @@ input:checked + .slider:before {
   height: 100%;
   cursor: pointer;
 }
+.username {
+  cursor: pointer;
+  text-decoration: underline;
+}

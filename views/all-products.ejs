@@ -1,0 +1,47 @@
+<%- include('includes/header') %>
+
+<link rel="stylesheet" type="text/css" href="/css/products.css" />
+
+<body>
+  <div id="main_container">
+    <div class="restaurant_menu_frame">
+      <div class="restaurant_container">
+        <div class="dishs_table">
+          <table class="table table-bordered table-hover">
+            <thead class="thead-light">
+              <th class="scope">T/r</th>
+              <th class="scope">Poduct name</th>
+              <th class="scope">Product type</th>
+              <th class="scope">Product price</th>
+              <th class="scope">Product quantity</th>
+              <th class="scope">Product status</th>
+            </thead>
+            <% user_data.map((value, key) => { %>
+
+            <tbody class="new_product" style="background: white">
+              <td><%= key + 1 %></td>
+              <td name="product_name" class="row_data">
+                <%= value.product_name %>
+              </td>
+              <td><%= value.product_collection%></td>
+              <td>
+                <span name="product_price" class="row_data"
+                  ><%= value.product_price %></span
+                ><span> <%= value.product_price_status %> </span>
+              </td>
+              <td name="product_left_cnt" class="row_data">
+                <%= value.product_left_cnt %>
+              </td>
+              <td><%= value.product_status %></td>
+            </tbody>
+            <% }); %>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script></script>
+</body>
+
+<%- include('includes/footer') %>

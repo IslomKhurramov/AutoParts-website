@@ -188,3 +188,24 @@ userController.updateUserByAdmin = async (req, res) => {
 //     res.json({ state: "fail", message: err.message });
 //   }
 // };
+userController.getUserProductsInfo = async (req, res) => {
+  try {
+    console.log("GET cont.getUserProductsInfo");
+    //todo:get user data
+
+    const query = req.params.id;
+
+    const product = new Product();
+    const result = await product.getUserProductsInfoData(query);
+
+    // if (res.locals.member.mb_type === "ADMIN") {
+    //   res.render(`all-users`, { user_data: result });
+    // } else {
+    res.render(`all-products`, { user_data: result });
+    // }
+    // res.send("ok");
+  } catch (err) {
+    console.log("ERROR: cont.getUserProductsInfo", err.message);
+    res.json({ state: "fail", message: err.message });
+  }
+};
