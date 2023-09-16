@@ -17,8 +17,8 @@ class Product {
       const auth_mb_id = shapeIntoMongosObjectId(member?._id);
 
       let match = { product_status: "PROCESS" };
-      if (data.user_mb_id) {
-        match["user_mb_id"] = shapeIntoMongosObjectId(data.user_mb_id);
+      if (data.product_collection) {
+        // match["user_mb_id"] = shapeIntoMongosObjectId(data.user_mb_id);
         match["product_collection"] = data.product_collection; //faqatgina bitta userga tegishli productni chiqarish un
       }
       const sort =
