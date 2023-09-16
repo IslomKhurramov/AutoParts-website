@@ -95,7 +95,7 @@ memberController.getChosenMember = async (req, res) => {
     const id = req.params.id;
 
     const member = new Member();
-    const result = await member.getMemberData(id);
+    const result = await member.getChosenMemberData(req.member, id);
 
     res.json({ state: "succeed", data: result });
   } catch (err) {
