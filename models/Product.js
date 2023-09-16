@@ -11,6 +11,39 @@ class Product {
     this.productModel = ProductModel;
   }
 
+  async getAllProductsData(member, data) {
+    try {
+      const auth_mb_id = shapeIntoMongosObjectId(member?._id);
+
+      let match = { product_status: "PROCESS" };
+      if (data.user_mb_id) {
+        match["user_mb_id"] = shapeIntoMongosObjectId(data.user_mb_id);
+        match["product_collection"] = data.product_collection; //faqatgina bitta userga tegishli productni chiqarish un
+      }
+      const sort =
+        data.order === "product_price"
+          ? { [data.order]: 1 }
+          : { [data.order]: -1 };
+
+      const result = await this.productModel
+        .aggregate([
+          { $match: match },
+          { $sort: sort },
+          { $skip: (data.page * 1 - 1) * data.limit },
+          { $limit: data.limit * 1 },
+        ])
+        .exec();
+
+      //TODO: auth user liked or not
+
+      assert.ok(result, Definer.general_err1);
+
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async getUserProductsData(member) {
     try {
       member._id = shapeIntoMongosObjectId(member._id);
