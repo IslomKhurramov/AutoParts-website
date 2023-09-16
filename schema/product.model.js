@@ -4,6 +4,7 @@ const {
   product_status_enums,
   product_price_enums,
   product_collection_id_enums,
+  product_collection_model_enums,
 } = require("../lib/config");
 const Schema = mongoose.Schema;
 
@@ -26,7 +27,14 @@ const productSchema = new mongoose.Schema(
         messgae: "{VALUE} is not among permitted enum values",
       },
     },
-
+    product_collection_model: {
+      type: String,
+      required: true,
+      enum: {
+        values: product_collection_model_enums,
+        messgae: "{VALUE} is not among permitted enum values",
+      },
+    },
     product_status: {
       type: String,
       required: false,

@@ -75,6 +75,7 @@
               <th class="scope">Poduct name</th>
               <th class="scope">Product type</th>
               <th class="scope">Car type</th>
+              <th class="scope">Car Model</th>
               <th class="scope">Product price</th>
               <th class="scope">Product quantity</th>
               <th class="scope">Product status</th>
@@ -87,6 +88,7 @@
                 <td name="product_name" data-field="product_name"  edit_type="click" class="row_data"><%= value.product_name %></td>
                 <td><%= value.product_collection%></td>
                 <td><%= value.product_collection_id%></td>
+                <td><%= value.product_collection_model%></td>
                 <td><span id="<%= value._id %>" name="product_price" data-field="product_price"  edit_type="click" class="row_data"><%= value.product_price %></span><span> 
                   <select class="spec_select new_product_price_status" id="<%= value._id %>">
                   <option value="KRW" <%= value.product_price_status === 'KRW' ? 'selected' : '' %> >KRW</option>
@@ -169,6 +171,26 @@
               <label >Product quantity</label>
               <input type="number" placeholder="Product quantity" name="product_left_cnt" class="product_left_cnt">
             </div>
+           
+          </div>
+          <div class="half_input_frame">
+            <div class="half_input_2">
+              <label >Car Model</label>
+              <select name="product_collection_model" class="product_collection_model" >
+                <option value="BMW" selected>BMW</option>
+                <option value="Mersedez-Benz">Mersedez-Benz</option>
+                <option value="Audi">Audi</option>
+                <option value="KIA">KIA</option>
+                <option value="Hyundai">Hyundai</option>
+                <option value="Genesis">Genesis</option>
+                <option value="Chevrolet">Chevrolet</option>
+                <option value="Toyota">Toyota</option>
+                <option value="Honda">Honda</option>
+                <option value="Tesla">Tesla</option>
+                <option value="Any">Any</option>
+              </select>            
+            </div> 
+      
            
           </div>
 
@@ -408,9 +430,10 @@
       const product_description=$(".product_description").val();
       const product_status=$(".product_status").val();
       const product_collection=$(".product_collection").val();
+      const product_collection_model=$(".product_collection_model").val();
 
 
-      if(user_id==''||product_name==''||product_price==""||product_left_cnt==""||product_collection==''||product_description==""||product_status==""){
+      if(user_id==''||product_name==''||product_price==""||product_left_cnt==""||product_collection==''||product_collection_model==''||product_description==""||product_status==""){
         alert("Iltimos hamma malumotlarni kiriting!");
         return false;
       }else return true;
