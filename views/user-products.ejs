@@ -30,6 +30,7 @@
               <th class="scope">T/r</th>
               <th class="scope">Poduct name</th>
               <th class="scope">Product type</th>
+              <th class="scope">Car type</th>
               <th class="scope">Product price</th>
               <th class="scope">Product quantity</th>
               <th class="scope">Product status</th>
@@ -41,6 +42,7 @@
                 <td><%= key + 1 %></td>
                 <td name="product_name" data-field="product_name"  edit_type="click" class="row_data"><%= value.product_name %></td>
                 <td><%= value.product_collection%></td>
+                <td><%= value.product_collection_id%></td>
                 <td><span id="<%= value._id %>" name="product_price" data-field="product_price"  edit_type="click" class="row_data"><%= value.product_price %></span><span> 
                   <select class="spec_select new_product_price_status" id="<%= value._id %>">
                   <option value="KRW" <%= value.product_price_status === 'KRW' ? 'selected' : '' %> >KRW</option>
@@ -98,20 +100,27 @@
           </div>
 
           <div class="half_input_frame">
-            <div class="half_input">
+            <div class="half_input_2">
               <label >Product type</label>
               <select name="product_collection" class="product_collection" >
                 <option value="Body Components" selected>Body Components</option>
-                <option value="Bumpers">Bumpers</option>
-                <option value="Electrical">Electrical</option>
+                <option value="Bumbpers">Bumpers</option>
                 <option value="Heating">Heating</option>
                 <option value="Lighting">Lighting</option>
                 <option value="Hardware">Hardware</option>
                 <option value="Interior">Interior</option>
                 <option value="Transmission">Transmission</option>
               </select>            
+            </div> 
+            <div class="half_input_2">
+              <label >Car type</label>
+              <select name="product_collection_id" class="product_collection_id" >
+                <option value="electric" selected>Electrical Cars</option>
+                <option value="manual transmission">Automated Manual Transmission</option>
+                
+              </select>            
             </div>
-            <div class="half_input">
+            <div class="half_input_2">
               <label >Product quantity</label>
               <input type="number" placeholder="Product quantity" name="product_left_cnt" class="product_left_cnt">
             </div>
@@ -319,9 +328,10 @@ editableCells.each(function () {
       const product_description=$(".product_description").val();
       const product_status=$(".product_status").val();
       const product_collection=$(".product_collection").val();
+      const product_collection_id=$(".product_collection_id").val();
 
 
-      if(user_id==''||product_name==''||product_price==""||product_left_cnt==""||product_collection==''||product_description==""||product_status==""){
+      if(user_id==''||product_name==''||product_price==""||product_left_cnt==""||product_collection==''||product_collection_id==''||product_description==""||product_status==""){
         alert("Iltimos hamma malumotlarni kiriting!");
         return false;
       }else return true;

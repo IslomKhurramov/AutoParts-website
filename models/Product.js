@@ -1,7 +1,10 @@
 const Definer = require("../lib/mistake");
 const ProductModel = require("../schema/product.model");
 const assert = require("assert");
-const { shapeIntoMongosObjectId } = require("../lib/config");
+const {
+  shapeIntoMongosObjectId,
+  product_collection_id_enums,
+} = require("../lib/config");
 
 class Product {
   constructor() {
@@ -26,6 +29,7 @@ class Product {
     try {
       id = shapeIntoMongosObjectId(id);
       const result = await this.productModel.find({
+        product_collection_id: product_collection_id_enums,
         user_mb_id: id,
       });
       assert.ok(result, Definer.general_err1);
