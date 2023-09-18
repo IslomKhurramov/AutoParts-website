@@ -113,3 +113,25 @@ memberController.retrieveAuthMember = (req, res, next) => {
     next();
   }
 };
+
+memberController.likeMemberChosen = async (req, res) => {
+  try {
+    console.log("POst cont.likeMemberChosen");
+    assert.ok(req.member, Definer.auth_err5);
+
+    const member = new Member();
+    const like_ref_id = req.body.like_ref_id;
+    const group_type = req.body.group_type;
+
+    const result = await member.likeChosenItemByMember(
+      req.member,
+      like_ref_id,
+      group_type
+    );
+
+    res.json({ state: "success", data: result });
+  } catch (err) {
+    console.log(`ERROR, cont/likeMemberChosen, ${err.message}`);
+    res.json({ state: "fail", message: err.message });
+  }
+};

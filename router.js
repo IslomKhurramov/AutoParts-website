@@ -21,6 +21,11 @@ router.get(
   memberController.retrieveAuthMember,
   memberController.getChosenMember
 );
+router.post(
+  "/member-liken",
+  memberController.retrieveAuthMember,
+  memberController.likeMemberChosen
+);
 
 //PRODUCT related ROUTERS
 router.post(
