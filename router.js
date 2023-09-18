@@ -89,5 +89,11 @@ router.post(
   memberController.retrieveAuthMember,
   followController.unsubscribe
 );
+router.get("/follow/followings", followController.getMemberFollowings);
 
+router.get(
+  "/follow/followers",
+  memberController.retrieveAuthMember, //bizga follow bugan userga shu authenticated user followback boganmi yoqmi tekshirish un kk
+  followController.getMemberFollowers
+);
 module.exports = router;
