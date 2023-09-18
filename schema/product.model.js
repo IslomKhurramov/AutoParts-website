@@ -81,6 +81,11 @@ const productSchema = new mongoose.Schema(
       required: false,
       default: 0,
     },
+    product_dislikes: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
     product_views: {
       type: Number,
       required: false,

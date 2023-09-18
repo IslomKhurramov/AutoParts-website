@@ -45,7 +45,7 @@ class Community {
 
       const result = await this.boArticleModel
         .aggregate([
-          { $match: { mb_id: mb_id, art_status: "active" } },
+          { $match: { mb_id: mb_id, art_status: "ACTIVE" } },
           { $sort: { createdAt: -1 } },
           { $skip: (page - 1) * limit },
           { $limit: limit },
@@ -102,6 +102,24 @@ class Community {
           lookup_auth_member_liked(auth_mb_id),
         ])
         .exec();
+      assert.ok(result, Definer.article_err3);
+
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async getChosenArticleData(member, art_id) {
+    try {
+      art_id = shapeIntoMongosObjectId(art_id);
+
+      if (member) {
+        const member_obj = new Member();
+        await member_obj.viewChosenItemByMember(member, art_id, "community");
+      }
+
+      const result = await this.boArticleModel.findById({ _id: art_id }).exec();
       assert.ok(result, Definer.article_err3);
 
       return result;
