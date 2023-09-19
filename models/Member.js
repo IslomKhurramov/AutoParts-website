@@ -5,6 +5,7 @@ const assert = require("assert");
 const bcrypt = require("bcryptjs");
 const View = require("./View");
 const Like = require("./Like");
+const Dislike = require("./Dislike");
 
 class Member {
   constructor() {
@@ -118,6 +119,36 @@ class Member {
         like_group: data.like_group,
         like_ref_id: data.like_ref_id,
         like_status: doesExist ? 0 : 1,
+      };
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async disLikeChosenItemByMember(member, dislike_ref_id, group_type) {
+    try {
+      dislike_ref_id = shapeIntoMongosObjectId(dislike_ref_id);
+      const mb_id = shapeIntoMongosObjectId(member._id);
+
+      const dislike = new Dislike(mb_id);
+      const isValid = await dislike.validateTargetItem(
+        dislike_ref_id,
+        group_type
+      );
+      assert.ok(isValid, Definer.general_err2);
+
+      const doesExist = await dislike.checkDislikeExistence(dislike_ref_id);
+
+      let data = doesExist
+        ? await dislike.removeMemberDislike(dislike_ref_id, group_type)
+        : dislike.insertMemberDislike(dislike_ref_id, group_type);
+      assert.ok(data, Definer.general_err1);
+
+      const result = {
+        dislike_group: data.dislike_group,
+        dislike_ref_id: data.dislike_ref_id,
+        dislike_status: doesExist ? 0 : 1,
       };
       return result;
     } catch (err) {

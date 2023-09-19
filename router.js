@@ -27,6 +27,12 @@ router.post(
   memberController.likeMemberChosen
 );
 
+router.post(
+  "/member-unliken",
+  memberController.retrieveAuthMember,
+  memberController.disLikeMemberChosen
+);
+
 //PRODUCT related ROUTERS
 router.post(
   "/products",
