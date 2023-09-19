@@ -107,4 +107,6 @@ router.get(
   memberController.retrieveAuthMember, //bizga follow bugan userga shu authenticated user followback boganmi yoqmi tekshirish un kk
   followController.getMemberFollowers
 );
+
+router.get("/search/:key", productController.searchProduct);
 module.exports = router;

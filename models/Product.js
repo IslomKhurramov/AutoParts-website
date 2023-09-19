@@ -150,5 +150,26 @@ class Product {
       throw err;
     }
   }
+  async searchProductData(key) {
+    try {
+      const result = await this.productModel
+        .find({
+          $or: [
+            {
+              product_name: { $regex: key },
+            },
+            {
+              product_collection: { $regex: key },
+            },
+          ],
+        })
+        .exec();
+      assert.ok(result, Definer.general_err1);
+      // console.log(result);
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
 }
 module.exports = Product;
