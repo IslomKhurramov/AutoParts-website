@@ -156,10 +156,10 @@ class Product {
         .find({
           $or: [
             {
-              product_name: { $regex: key },
+              product_name: { $regex: key, $options: "i" },
             },
             {
-              product_collection: { $regex: key },
+              product_collection: { $regex: key, $options: "i" },
             },
           ],
         })
