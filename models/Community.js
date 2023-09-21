@@ -75,8 +75,8 @@ class Community {
       const auth_mb_id = shapeIntoMongosObjectId(member?._id);
       let matches =
         inquery.bo_id === "all"
-          ? { bo_id: { $in: board_id_enum_list }, art_status: "active" }
-          : { bo_id: inquery.bo_id, art_status: "active" };
+          ? { bo_id: { $in: board_id_enum_list }, art_status: "ACTIVE" }
+          : { bo_id: inquery.bo_id, art_status: "ACTIVE" };
       inquery.limit *= 1;
       inquery.page *= 1;
       const sort = inquery.order
