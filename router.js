@@ -109,4 +109,16 @@ router.get(
 );
 
 router.get("/search/:key", productController.searchProduct);
+
+router.post(
+  "/comment",
+  memberController.retrieveAuthMember,
+  memberController.createComment
+);
+
+router.post(
+  "/comment/reply",
+  memberController.retrieveAuthMember,
+  memberController.createReply
+);
 module.exports = router;
