@@ -5,6 +5,7 @@ const assert = require("assert");
 const Definer = require("../lib/mistake");
 const commentModel = require("../schema/comment.model");
 const replyModel = require("../schema/reply.comment");
+const Comment = require("../models/Comment");
 
 memberController.signup = async (req, res) => {
   try {
@@ -168,40 +169,42 @@ memberController.createComment = async (req, res) => {
   try {
     console.log("POst cont.createComment");
     assert.ok(req.member, Definer.auth_err5);
-
+    const commentId = req.member;
     const { comment_content, mb_id, art_id, product_id } = req.body;
 
-    const new_comment = new commentModel({
+    const new_comment = new Comment();
+    const result = await new_comment.createCommentData(
+      commentId,
       comment_content,
-      mb_id: mb_id,
-      product_id: product_id,
-      art_id: art_id,
-    });
+      mb_id,
+      art_id,
+      product_id
+    );
 
-    const saved_comment = await new_comment.save();
-
-    res.json({ state: "success", data: saved_comment });
+    res.json({ state: "success", data: result });
   } catch (err) {
     console.log(`ERROR, cont/createComment, ${err.message}`);
     res.json({ state: "fail", message: err.message });
   }
 };
+
 memberController.createReply = async (req, res) => {
   try {
     console.log("POST cont.createReply");
     assert.ok(req.member, Definer.auth_err5);
 
-    const { reply_content, mb_id, parent_comment_id } = req.body;
+    const parentCommentId = req.params.parentCommentId;
+    const { reply_content, mb_id } = req.body;
+    // console.log("+++++++++", parentCommentId);
 
-    const new_reply = new replyModel({
+    const new_comment = new Comment();
+    const result = await new_comment.createReplyData(
       reply_content,
-      mb_id: mb_id,
-      parent_comment_id: parent_comment_id, // This links the reply to the parent comment
-    });
+      mb_id,
+      parentCommentId
+    );
 
-    const saved_reply = await new_reply.save();
-
-    res.json({ state: "success", data: saved_reply });
+    res.json({ state: "success", data: result });
   } catch (err) {
     console.log(`ERROR, cont/createReply, ${err.message}`);
     res.json({ state: "fail", message: err.message });

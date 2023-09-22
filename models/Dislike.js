@@ -2,7 +2,7 @@ const MemberModel = require("../schema/member.model");
 const ProductModel = require("../schema/product.model");
 const BoArticleModel = require("../schema/bo_article.model");
 const DislikeModel = require("../schema/dislike.model");
-const LikeModel = require("../schema/like.model");
+const CommentsModel = require("../schema/comment.model");
 const Definer = require("../lib/mistake");
 
 class Dislike {
@@ -11,6 +11,7 @@ class Dislike {
     this.memberModel = MemberModel;
     this.productModel = ProductModel;
     this.boArticleModel = BoArticleModel;
+    this.commentModel = CommentsModel;
     this.mb_id = mb_id;
   }
 
@@ -27,6 +28,9 @@ class Dislike {
           result = await this.productModel
             .findOne({ _id: id, product_status: "PROCESS" })
             .exec();
+          break;
+        case "comment":
+          result = await this.commentModel.findOne({ _id: id }).exec();
           break;
         case "community":
         default:
@@ -100,6 +104,14 @@ class Dislike {
             .findByIdAndUpdate(
               { _id: dislike_ref_id },
               { $inc: { product_dislikes: modifier } }
+            )
+            .exec();
+          break;
+        case "comment":
+          await this.commentModel
+            .findByIdAndUpdate(
+              { _id: dislike_ref_id },
+              { $inc: { comment_dislikes: modifier } }
             )
             .exec();
           break;

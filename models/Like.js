@@ -1,6 +1,7 @@
 const MemberModel = require("../schema/member.model");
 const ProductModel = require("../schema/product.model");
 const BoArticleModel = require("../schema/bo_article.model");
+const CommentsModel = require("../schema/comment.model");
 
 const LikeModel = require("../schema/like.model");
 const Definer = require("../lib/mistake");
@@ -11,6 +12,7 @@ class Like {
     this.memberModel = MemberModel;
     this.productModel = ProductModel;
     this.boArticleModel = BoArticleModel;
+    this.commentModel = CommentsModel;
     this.mb_id = mb_id;
   }
 
@@ -27,6 +29,9 @@ class Like {
           result = await this.productModel
             .findOne({ _id: id, product_status: "PROCESS" })
             .exec();
+          break;
+        case "comment":
+          result = await this.commentModel.findOne({ _id: id }).exec();
           break;
         case "community":
         default:
@@ -108,6 +113,14 @@ class Like {
             .findByIdAndUpdate(
               { _id: like_ref_id },
               { $inc: { product_likes: modifier } }
+            )
+            .exec();
+          break;
+        case "comment":
+          await this.commentModel
+            .findByIdAndUpdate(
+              { _id: like_ref_id },
+              { $inc: { comment_likes: modifier } }
             )
             .exec();
           break;
