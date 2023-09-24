@@ -210,3 +210,20 @@ memberController.createReply = async (req, res) => {
     res.json({ state: "fail", message: err.message });
   }
 };
+
+memberController.myComments = async (req, res) => {
+  try {
+    console.log(`GET: cont/myComments`);
+    assert.ok(req.member, Definer.auth_err5);
+
+    const comment = new Comment();
+    const result = await comment.myCommentsData(req.member);
+
+    // const result2 = await comment.myReplyCommentsData(req.member);
+
+    res.json({ state: "success", data: result });
+  } catch (err) {
+    console.log(`ERROR, cont/myComments, ${err.message}`);
+    res.json({ state: "fail", message: err.message });
+  }
+};

@@ -70,5 +70,40 @@ class Comment {
       throw err;
     }
   }
+
+  async myCommentsData(member) {
+    try {
+      const mb_id = shapeIntoMongosObjectId(member._id);
+      // const matches = { mb_id: mb_id };
+
+      const result = await this.commentModel
+        .aggregate([
+          { $match: { mb_id: mb_id } },
+          // { $sort: { createdAt } },
+          {
+            $lookup: {
+              from: "members",
+              localField: "mb_id",
+              foreignField: "_id",
+              as: "member_comments",
+            },
+          },
+          {
+            $lookup: {
+              from: "replies",
+              localField: "_id",
+              foreignField: "parent_comment_id",
+              as: "reply_comments",
+            },
+          },
+        ])
+        .exec();
+
+      console.log("result:::", result);
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
 }
 module.exports = Comment;

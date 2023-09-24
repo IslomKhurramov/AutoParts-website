@@ -121,4 +121,10 @@ router.post(
   memberController.retrieveAuthMember,
   memberController.createReply
 );
+router.post(
+  "/comment/myComments",
+  memberController.retrieveAuthMember,
+  memberController.myComments
+);
+
 module.exports = router;
