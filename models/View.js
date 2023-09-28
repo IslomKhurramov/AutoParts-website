@@ -16,19 +16,11 @@ class View {
     try {
       let result;
       switch (group_type) {
-        case "member":
-          result = await this.memberModel
-            .findOne({
-              _id: view_ref_id,
-              mb_status: "ACTIVE",
-            })
-            .exec();
-          break;
         case "product":
           result = await this.productModel
             .findOne({
               _id: view_ref_id,
-              mb_status: "PROCESS",
+              product_status: "PROCESS",
             })
             .exec();
           break;
@@ -36,7 +28,7 @@ class View {
           result = await this.boArticleModel
             .findOne({
               _id: view_ref_id,
-              art_status: "PROCESS",
+              art_status: "ACTIVE",
             })
             .exec();
           break;

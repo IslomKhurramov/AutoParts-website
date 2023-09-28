@@ -4,6 +4,8 @@ const assert = require("assert");
 const {
   shapeIntoMongosObjectId,
   product_collection_id_enums,
+  lookup_auth_member_liked,
+  lookup_auth_member_unliked,
 } = require("../lib/config");
 const Member = require("./Member");
 
@@ -16,10 +18,14 @@ class Product {
     try {
       const auth_mb_id = shapeIntoMongosObjectId(member?._id);
 
-      let match = { product_status: "PROCESS" };
+      let match = {
+        product_status: "PROCESS",
+      };
+
       if (data.product_collection) {
         // match["user_mb_id"] = shapeIntoMongosObjectId(data.user_mb_id);
-        match["product_collection"] = data.product_collection; //faqatgina bitta userga tegishli productni chiqarish un
+        match["product_collection"] = data.product_collection;
+        //faqatgina bitta userga tegishli productni chiqarish un
       }
       const sort =
         data.order === "product_price"
@@ -32,6 +38,50 @@ class Product {
           { $sort: sort },
           { $skip: (data.page * 1 - 1) * data.limit },
           { $limit: data.limit * 1 },
+
+          lookup_auth_member_liked(auth_mb_id),
+          lookup_auth_member_unliked(auth_mb_id),
+        ])
+        .exec();
+
+      //TODO: auth user liked or not
+
+      assert.ok(result, Definer.general_err1);
+
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async getAllProductsElectricData(member, data) {
+    try {
+      const auth_mb_id = shapeIntoMongosObjectId(member?._id);
+
+      let match = {
+        product_status: "PROCESS",
+        product_collection_id: data.product_collection_id,
+      };
+
+      if (data.product_collection) {
+        // match["user_mb_id"] = shapeIntoMongosObjectId(data.user_mb_id);
+        match["product_collection"] = data.product_collection;
+        //faqatgina bitta userga tegishli productni chiqarish un
+      }
+      const sort =
+        data.order === "product_price"
+          ? { [data.order]: 1 }
+          : { [data.order]: -1 };
+
+      const result = await this.productModel
+        .aggregate([
+          { $match: match },
+          { $sort: sort },
+          { $skip: (data.page * 1 - 1) * data.limit },
+          { $limit: data.limit * 1 },
+
+          lookup_auth_member_liked(auth_mb_id),
+          lookup_auth_member_unliked(auth_mb_id),
         ])
         .exec();
 
@@ -56,12 +106,16 @@ class Product {
       }
 
       const result = await this.productModel
-        .aggregate([{ $match: { _id: id, product_status: "PROCESS" } }])
-        //TODO: auth user liked or not
+        .aggregate([
+          { $match: { _id: id, product_status: "PROCESS" } },
+          lookup_auth_member_liked(auth_mb_id),
+          lookup_auth_member_unliked(auth_mb_id),
+        ])
         .exec();
+      //TODO: auth user liked or not
 
       assert.ok(result, Definer.general_err1);
-      return result;
+      return result[0];
     } catch (err) {
       throw err;
     }
