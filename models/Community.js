@@ -45,7 +45,7 @@ class Community {
 
       const result = await this.boArticleModel
         .aggregate([
-          { $match: { mb_id: mb_id, art_status: "ACTIVE" } },
+          { $match: { mb_id: mb_id, art_status: "active" } },
           { $sort: { createdAt: -1 } },
           { $skip: (page - 1) * limit },
           { $limit: limit },

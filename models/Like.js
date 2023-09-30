@@ -36,7 +36,7 @@ class Like {
         case "community":
         default:
           result = await this.boArticleModel
-            .findOne({ _id: id, art_status: "ACTIVE" })
+            .findOne({ _id: id, art_status: "active" })
             .exec();
           break;
       }

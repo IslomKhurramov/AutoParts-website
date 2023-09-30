@@ -21,11 +21,9 @@ class Product {
       let match = {
         product_status: "PROCESS",
       };
-
-      if (data.product_collection) {
-        // match["user_mb_id"] = shapeIntoMongosObjectId(data.user_mb_id);
-        match["product_collection"] = data.product_collection;
-        //faqatgina bitta userga tegishli productni chiqarish un
+      if (data.user_mb_id) {
+        match["user_mb_id"] = shapeIntoMongosObjectId(data.user_mb_id);
+        // match["product_collection"] = data?.product_collection;
       }
       const sort =
         data.order === "product_price"
@@ -213,7 +211,7 @@ class Product {
               product_name: { $regex: key, $options: "i" },
             },
             {
-              product_collection: { $regex: key, $options: "i" },
+              product_collection_model: { $regex: key, $options: "i" },
             },
           ],
         })
