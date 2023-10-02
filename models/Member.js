@@ -1,4 +1,8 @@
-const { shapeIntoMongosObjectId } = require("../lib/config");
+const {
+  shapeIntoMongosObjectId,
+  lookup_auth_member_following,
+  lookup_auth_member_liked,
+} = require("../lib/config");
 const Definer = require("../lib/mistake");
 const MemberModel = require("../schema/member.model");
 const assert = require("assert");
@@ -53,28 +57,62 @@ class Member {
     }
   }
 
-  async getChosenMemberData(member, id) {
+  async updateMemberData(id, data, image) {
     try {
-      id = shapeIntoMongosObjectId(id);
+      const mb_id = shapeIntoMongosObjectId(id);
+      let params = {
+        mb_nick: data.mb_nick,
+        mb_phone: data.mb_phone,
+        mb_address: data.mb_address,
+        mb_description: data.mb_description,
+        mb_image: image ? image.path : null,
+      };
 
-      if (member) {
-        await this.viewChosenItemByMember(member, id, "member");
-      }
-
+      for (let prop in params) if (!params[prop]) delete params[prop];
       const result = await this.memberModel
-        .aggregate([
-          { $match: { _id: id, mb_status: "ACTIVE" } },
-          { $unset: "mb_password" },
-        ])
+        .findOneAndUpdate({ _id: mb_id }, params, {
+          runValidators: true,
+          lean: true,
+          returnDocument: "after",
+        })
         .exec();
-
-      assert.ok(result, Definer.general_err2);
-      return result[0];
+      assert.ok(result, Definer.general_err1);
+      return result;
     } catch (err) {
       throw err;
     }
   }
 
+  async getChosenMemberData(member, id) {
+    try {
+      const auth_mb_id = shapeIntoMongosObjectId(member?._id);
+      id = shapeIntoMongosObjectId(id);
+      console.log("member:::", member);
+      console.log("id:::", id);
+
+      let aggregateQuery = [
+        { $match: { _id: id, mb_status: "ACTIVE" } },
+        { $unset: "mb_password" },
+      ];
+
+      if (member) {
+        //condition if not seen before\
+        // await this.viewChosenItemByMember(member, id, "member"); //buyerda member qaysi turdagi itemni view qilganimiz
+        // aggregateQuery.push(lookup_auth_member_liked(auth_mb_id));
+        aggregateQuery.push(
+          lookup_auth_member_following(auth_mb_id, "members")
+        );
+      }
+
+      const result = await this.memberModel.aggregate(aggregateQuery).exec();
+
+      assert.ok(result, Definer.general_err2);
+      console.log("result:::", result);
+      return result[0];
+    } catch (err) {
+      throw err;
+    }
+  }
   async viewChosenItemByMember(member, view_ref_id, group_type) {
     try {
       view_ref_id = shapeIntoMongosObjectId(view_ref_id);

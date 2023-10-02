@@ -33,6 +33,13 @@ router.post(
   memberController.disLikeMemberChosen
 );
 
+router.post(
+  "/member/update",
+  memberController.retrieveAuthMember,
+  uploader_member.single("mb_image"),
+  memberController.updateMember
+);
+
 //PRODUCT related ROUTERS
 router.post(
   "/products",
