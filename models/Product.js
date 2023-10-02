@@ -17,6 +17,7 @@ class Product {
   async getAllProductsData(member, data) {
     try {
       const auth_mb_id = shapeIntoMongosObjectId(member?._id);
+      // console.log("authhhh", auth_mb_id);
 
       let match = {
         product_status: "PROCESS",

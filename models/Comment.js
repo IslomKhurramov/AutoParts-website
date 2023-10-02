@@ -3,7 +3,11 @@ const CommentModel = require("../schema/comment.model");
 const ReplyModel = require("../schema/reply.comment");
 const assert = require("assert");
 const Member = require("./Member");
-const { shapeIntoMongosObjectId } = require("../lib/config");
+const {
+  shapeIntoMongosObjectId,
+  lookup_auth_member_liked,
+  lookup_auth_member_unliked,
+} = require("../lib/config");
 
 class Comment {
   constructor() {
@@ -71,21 +75,24 @@ class Comment {
     }
   }
 
-  async myCommentsData(member) {
+  async myCommentsData(member, id) {
     try {
-      const mb_id = shapeIntoMongosObjectId(member._id);
+      id = shapeIntoMongosObjectId(id);
+      const auth_mb_id = shapeIntoMongosObjectId(member?._id);
       // const matches = { mb_id: mb_id };
+      console.log("authhhh", auth_mb_id);
 
       const result = await this.commentModel
         .aggregate([
-          { $match: { mb_id: mb_id } },
+          { $match: { product_id: id } },
+
           // { $sort: { createdAt } },
           {
             $lookup: {
               from: "members",
               localField: "mb_id",
               foreignField: "_id",
-              as: "member_comments",
+              as: "member_data",
             },
           },
           {
@@ -96,6 +103,8 @@ class Comment {
               as: "reply_comments",
             },
           },
+          lookup_auth_member_liked(auth_mb_id),
+          lookup_auth_member_unliked(auth_mb_id),
         ])
         .exec();
 

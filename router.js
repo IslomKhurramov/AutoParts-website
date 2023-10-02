@@ -134,7 +134,7 @@ router.post(
   memberController.createReply
 );
 router.post(
-  "/comment/myComments",
+  "/comment/myComments/:id",
   memberController.retrieveAuthMember,
   memberController.myComments
 );

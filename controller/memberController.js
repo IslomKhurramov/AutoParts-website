@@ -233,10 +233,11 @@ memberController.createReply = async (req, res) => {
 memberController.myComments = async (req, res) => {
   try {
     console.log(`GET: cont/myComments`);
-    assert.ok(req.member, Definer.auth_err5);
 
     const comment = new Comment();
-    const result = await comment.myCommentsData(req.member);
+    const id = req.params.id;
+    // console.log("req.member", req.member);
+    const result = await comment.myCommentsData(req.member, id);
 
     // const result2 = await comment.myReplyCommentsData(req.member);
 
