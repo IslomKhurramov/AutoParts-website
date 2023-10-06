@@ -212,15 +212,15 @@ memberController.createReply = async (req, res) => {
     console.log("POST cont.createReply");
     assert.ok(req.member, Definer.auth_err5);
 
-    const parentCommentId = req.params.parentCommentId;
-    const { reply_content, mb_id } = req.body;
+    // const parentCommentId = req.params.parentCommentId;
+    const { reply_content, mb_id, parent_comment_id } = req.body;
     // console.log("+++++++++", parentCommentId);
 
     const new_comment = new Comment();
     const result = await new_comment.createReplyData(
       reply_content,
       mb_id,
-      parentCommentId
+      parent_comment_id
     );
 
     res.json({ state: "success", data: result });

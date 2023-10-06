@@ -129,7 +129,7 @@ router.post(
 );
 
 router.post(
-  "/comment/reply/:parentCommentId",
+  "/comment/reply",
   memberController.retrieveAuthMember,
   memberController.createReply
 );

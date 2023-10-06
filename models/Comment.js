@@ -39,17 +39,62 @@ class Comment {
       throw err;
     }
   }
-  async createReplyData(reply_content, mb_id, parentCommentId) {
+  async createReplyData(reply_content, mb_id, parent_comment_id) {
     try {
       console.log("POst cont.createCommentData");
-      const result = await this.replyModel({
+      mb_id = shapeIntoMongosObjectId(mb_id);
+      parent_comment_id = shapeIntoMongosObjectId(parent_comment_id);
+      // Use the $lookup stage to fetch member data and add it to the reply document
+      const result = await this.replyModel.create({
         reply_content,
-        mb_id: mb_id,
-        parent_comment_id: parentCommentId, // This links the reply to the parent comment
+        mb_id,
+        parent_comment_id: parent_comment_id,
       });
-      const saved_comment = await result.save();
 
-      return saved_comment;
+      // Now, you have the reply document with member data
+      const replyWithMemberData = await this.replyModel.aggregate([
+        {
+          $match: { _id: result._id },
+        },
+        {
+          $lookup: {
+            from: "members",
+            localField: "mb_id",
+            foreignField: "_id",
+            as: "member_data",
+          },
+        },
+        {
+          $unwind: "$member_data",
+        },
+      ]);
+
+      return replyWithMemberData[0]; // Return the first result (assuming only one reply was created)
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async performAggregation(mb_id) {
+    try {
+      console.log("mbid::", mb_id);
+      mb_id = shapeIntoMongosObjectId(mb_id);
+      const result = await this.replyModel
+        .aggregate([
+          { $match: { mb_id: mb_id } },
+          {
+            $lookup: {
+              from: "members",
+              localField: "mb_id",
+              foreignField: "_id",
+              as: "member_data",
+            },
+          },
+          { $unwind: "$member_data" },
+        ])
+        .exec();
+      console.log("Aggregation result:", result);
+      return result;
     } catch (err) {
       throw err;
     }

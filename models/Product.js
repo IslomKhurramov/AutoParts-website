@@ -22,9 +22,9 @@ class Product {
       let match = {
         product_status: "PROCESS",
       };
-      if (data.user_mb_id) {
+      if (data.product_collection) {
         match["user_mb_id"] = shapeIntoMongosObjectId(data.user_mb_id);
-        // match["product_collection"] = data?.product_collection;
+        match["product_collection"] = data?.product_collection;
       }
       const sort =
         data.order === "product_price"
