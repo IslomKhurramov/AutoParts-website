@@ -148,11 +148,32 @@ class Comment {
               as: "reply_comments",
             },
           },
+          {
+            $unwind: {
+              path: "$reply_comments",
+              preserveNullAndEmptyArrays: true, // Preserve comments with no replies
+            },
+          },
+          {
+            $lookup: {
+              from: "members",
+              localField: "reply_comments.mb_id", // Assuming 'mb_id' is the field in replies that corresponds to the member ID
+              foreignField: "_id",
+              as: "reply_comments.member_data",
+            },
+          },
+          {
+            $group: {
+              _id: "$_id",
+              comment: { $first: "$$ROOT" }, // Preserve the original comment
+              reply_comments: { $push: "$reply_comments" }, // Push the updated reply_comments back into an array
+            },
+          },
           lookup_auth_member_liked(auth_mb_id),
           lookup_auth_member_unliked(auth_mb_id),
         ])
         .exec();
-
+      result.sort((a, b) => a.comment.createdAt - b.comment.createdAt);
       console.log("result:::", result);
       return result;
     } catch (err) {
