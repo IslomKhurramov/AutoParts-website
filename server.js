@@ -1,7 +1,5 @@
 const dotenv = require("dotenv");
 dotenv.config();
-
-const http = require("http");
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 
@@ -17,8 +15,8 @@ mongoose.connect(
     else {
       console.log("MongoDB connection succeed");
 
-      const app = require("./app");
-      const server = http.createServer(app);
+      const server = require("./app");
+
       let PORT = process.env.PORT || 3006;
       server.listen(PORT, function () {
         console.log(
