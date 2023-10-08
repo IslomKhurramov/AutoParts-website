@@ -15,7 +15,7 @@ const replySchema = new mongoose.Schema({
     ref: "Comment", // Reference to the Comment model
     required: true,
   },
-  created_at: {
+  createdAt: {
     type: Date,
     default: Date.now,
   },

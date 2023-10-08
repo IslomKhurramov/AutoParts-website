@@ -129,8 +129,11 @@ class Comment {
 
       const result = await this.commentModel
         .aggregate([
-          { $match: { product_id: id } },
-
+          {
+            $match: {
+              $or: [{ product_id: id }, { art_id: id }],
+            },
+          },
           // { $sort: { createdAt } },
           {
             $lookup: {
