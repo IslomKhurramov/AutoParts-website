@@ -37,7 +37,14 @@ class Product {
           { $sort: sort },
           { $skip: (data.page * 1 - 1) * data.limit },
           { $limit: data.limit * 1 },
-
+          {
+            $lookup: {
+              from: "comments",
+              localField: "_id",
+              foreignField: "product_id",
+              as: "product_comments",
+            },
+          },
           lookup_auth_member_liked(auth_mb_id),
           lookup_auth_member_unliked(auth_mb_id),
         ])
