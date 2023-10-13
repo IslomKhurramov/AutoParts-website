@@ -1,7 +1,5 @@
 const dotenv = require("dotenv");
 dotenv.config();
-
-const http = require("http");
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 
@@ -13,12 +11,12 @@ mongoose.connect(
     useUnifiedTopology: true,
   },
   (err, goose) => {
-    if (err) console.log("ERROR on connection MongoDB");
+    if (err) console.log("ERROR on connection MongoDB", err);
     else {
       console.log("MongoDB connection succeed");
 
-      const app = require("./app");
-      const server = http.createServer(app);
+      const server = require("./app");
+
       let PORT = process.env.PORT || 3006;
       server.listen(PORT, function () {
         console.log(

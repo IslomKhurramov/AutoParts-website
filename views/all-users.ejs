@@ -1,0 +1,474 @@
+<%- include('includes/header') %>
+
+<link rel="stylesheet" type="text/css" href="/css/products.css" />
+
+<body>
+  <div id="main_container">
+    <div class="group_name">
+      <ul class="nav justify-content-center">
+        <li class="nav-item" style="cursor: pointer">
+          <a class="nav-link active" href="/resto">Home</a>
+        </li>
+
+        <li class="nav-item" style="cursor: pointer">
+          <a class="nav-link" href="/resto/all-users">All Users</a>
+        </li>
+        <li class="nav-item" style="cursor: pointer">
+          <a class="nav-link" href="/resto/logout">Logout</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="restaurant_menu_frame">
+        <div class="restaurant_container">
+          <div class="resto_table">
+            <span class="new_dish_txt">All Users List</span>
+  
+            <table class="table table-hover table-sm">
+              <thead class="thead-light">
+                <tr class="thead-light">
+                  <th class="scope">#</th>
+                  <th class="scope">User Name</th>
+                  <th class="scope">User Phone Number</th>
+                  <th class="scope">User TOP</th>
+                  <th class="scope">User Status</th>
+                </tr>
+              </thead>
+  
+              <% justin.map(function(value, key){ %>
+              <tbody style="background: white">
+                <td ><%= key +1 %></td>
+                <td class="username" id="<%= value._id %>"><%= value.mb_nick %></td>
+                <td><%= value.mb_phone %></td>
+                <td style="width: 13%">
+                  <label class="switch">
+                    <input type="checkbox" class="mb_top" id="<%= value._id %>" <%= value.mb_top === 'Y' ? "checked" : "" %> />
+                    <span class="slider round"></span>
+                  </label>
+                </td>
+                <td style="width: 13%">
+                  <select class="spec_select mb_status" id="<%= value._id %>">
+                    <option value="ONPAUSE" <%= value.mb_status === 'ONPAUSE' ? "selected" : "" %>>ONPAUSE</option>
+                    <option value="ACTIVE" <%= value.mb_status === 'ACTIVE' ? "selected" : "" %>>ACTIVE</option>
+                    <option value="DELETED" <%= value.mb_status === 'DELETED' ? "selected" : "" %>>DELETED</option>
+                  </select>
+                </td>
+              </tbody>
+  
+              <% }); %>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+    
+      
+    <div class="restaurant_menu_frame">
+      <div class="restaurant_container">
+        <div class="dishs_table">
+          <span class="new_dish_txt"
+            ><%= member.mb_nick.toUpperCase() %>'s Products</span
+          >
+          <table class="table table-bordered table-hover">
+            <thead class="thead-light">
+              <th class="scope">T/r</th>
+              <th class="scope">Poduct name</th>
+              <th class="scope">Product type</th>
+              <th class="scope">Car type</th>
+              <th class="scope">Car Model</th>
+              <th class="scope">Product price</th>
+              <th class="scope">Product quantity</th>
+              <th class="scope">Product status</th>
+              <th class="scope"> </th>
+            </thead>
+            <% result.map((value, key) => { %>
+
+              <tbody class="new_product" id="<%= value._id %>" style="background: white">
+                <td><%= key + 1 %></td>
+                <td name="product_name" data-field="product_name"  edit_type="click" class="row_data"><%= value.product_name %></td>
+                <td><%= value.product_collection%></td>
+                <td><%= value.product_collection_id%></td>
+                <td><%= value.product_collection_model%></td>
+                <td><span id="<%= value._id %>" name="product_price" data-field="product_price"  edit_type="click" class="row_data"><%= value.product_price %></span><span> 
+                  <select class="spec_select new_product_price_status" id="<%= value._id %>">
+                  <option value="KRW" <%= value.product_price_status === 'KRW' ? 'selected' : '' %> >KRW</option>
+                  <option value="USD" <%= value.product_price_status === 'USD' ? 'selected' : '' %> >USD</option>
+                </select>
+              </span></td>
+                <td name="product_left_cnt" id="<%= value._id %>" data-field="product_left_cnt" edit_type="click" class="row_data"><%= value.product_left_cnt %></td>
+                <td >
+                  <select class="spec_select new_product_status" id="<%= value._id %>">
+                    <option value="PAUSED" <%= value.product_status === 'PAUSED' ? 'selected' : '' %> >PAUSED</option>
+                    <option value="PROCESS" <%= value.product_status === 'PROCESS' ? 'selected' : '' %> >PROCESS</option>
+                  </select>
+                </td>
+                <td >
+                  <button id="<%=value._id%>" class="save_btn" style="border-style: none;">Save</button>
+                  <button id="<%=value._id%>" class="edit_btn" style="border-style: none;">Edit</button>
+                    <button id="<%=value._id%>" class="cancel_btn" style="border-style: none;">Cancel</button>
+                </td>
+              </tbody>
+            <% }); %>
+          </table>
+          <div class="long_input" style="align-items: flex-end; margin-bottom: 25px;">
+            <button class="btn btn-primary hiding_btn" >Add Product</button>
+          </div>
+        </div>
+
+        <form onsubmit="return validateForm()" action="/resto/products/create" method="POST" 
+          class="dish_container" enctype="multipart/form-data">
+        
+          <div class="long_input" style="align-items: center; display: flex;">
+            <span class="new_dish_txt">New Product</span>
+          </div>
+
+          <div>
+            <div class="long_input">
+              <label >Product name</label>
+              <input type="text" placeholder="Product name" name="product_name" class="product_name">
+            </div>
+            <input  name="product_status" value="PROCESS" hidden>
+          </div>
+
+          <div class="half_input_frame">
+            <div class="half_input">
+              <label >Product price</label>
+              <input type="number" placeholder="Product price" name="product_price" class="product_price">
+            </div>
+            <div class="half_input">
+              <label >Currency</label>
+              <select name="product_price_status" class="product_price_status" >
+                <option value="KRW" selected>KRW</option>
+                <option value="USD">USD</option>
+                
+              </select>     
+            </div>
+          </div>
+
+          <div class="half_input_frame">
+            <div class="half_input_2">
+              <label >Product type</label>
+              <select name="product_collection" class="product_collection" >
+                <option value="body Components" selected>Body Components</option>
+                <option value="bumpers">Bumpers</option>
+                <option value="electrical">Electrical</option>
+                <option value="heating">Heating</option>
+                <option value="lighting">Lighting</option>
+                <option value="hardware">Hardware</option>
+                <option value="interior">Interior</option>
+                <option value="transmission">Transmission</option>
+                <option value="castrolOil">Castrol</option>
+                <option value="penzOil">Pennzoil</option>
+              </select>            
+            </div>
+            <div class="half_input_2">
+              <label >Car type</label>
+              <select name="product_collection_id" class="product_collection_id" >
+                <option value="electric" selected>Electrical Cars</option>
+                <option value="manual transmission">Automated Manual Transmission</option>
+                
+              </select>            
+            </div>
+            <div class="half_input_2">
+              <label >Product quantity</label>
+              <input type="number" placeholder="Product quantity" name="product_left_cnt" class="product_left_cnt">
+            </div>
+           
+          </div>
+          <div class="half_input_frame">
+            <div class="half_input_2">
+              <label >Car Model</label>
+              <select name="product_collection_model" class="product_collection_model" >
+                <option value="bmw" selected>BMW</option>
+                <option value="bersedez-Benz">Mersedez-Benz</option>
+                <option value="audi">Audi</option>
+                <option value="kIA">KIA</option>
+                <option value="hyundai">Hyundai</option>
+                <option value="genesis">Genesis</option>
+                <option value="chevrolet">Chevrolet</option>
+                <option value="toyota">Toyota</option>
+                <option value="honda">Honda</option>
+                <option value="tesla">Tesla</option>
+                <option value="any">Any</option>
+              </select>            
+            </div> 
+      
+           
+          </div>
+
+          <div class="long_input">
+            <label>Description</label>
+            <textarea name="product_description" class="product_description"></textarea>
+          </div>
+
+          <div class="img_frame">
+            <label>Product images</label>
+            <div class="media_frame">
+              <div class="upload_img_box">
+                <img src="/images/upload.png" class="1" id="image_section_1">
+                <input type="file" name="product_images" id="file" class="image_one"
+                onchange="previewFileHandler(this,1)">
+              </div>
+              <div class="upload_img_box">
+                <img src="/images/upload.png" class="2" id="image_section_2">
+                <input type="file" name="product_images" id="file" class="image_two"
+                onchange="previewFileHandler(this,2)">
+              </div>
+              <div class="upload_img_box">
+                <img src="/images/upload.png" class="3" id="image_section_3">
+                <input type="file" name="product_images" id="file" class="image_three"
+                onchange="previewFileHandler(this,3)">
+              </div>
+              <div class="upload_img_box">
+                <img src="/images/upload.png" class="4" id="image_section_4">
+                <input type="file" name="product_images" id="file" class="image_four"
+                onchange="previewFileHandler(this,4)">
+              </div>
+              <div class="upload_img_box">
+                <img src="/images/upload.png" class="5" id="image_section_5">
+                <input type="file" name="product_images" id="file" class="image_five"
+                onchange="previewFileHandler(this,5)">
+              </div>
+              <input  name="user_id" id="user_id" value="<%= member._id%>" hidden>
+            </div>
+          </div>
+
+
+          <div class="long_input" style="align-items: flex-end; margin-bottom: 25px;">
+            <button type="submit" class="btn btn-primary" id="create_product">Chop Etish</button>
+          </div>
+
+        </form>
+
+
+      </div>
+    </div>
+    </div>
+
+    
+    <script>
+      $(function(){
+          $(".mb_top").on("change", function (e){
+              const id= e.target.id;
+              const mb_top=e.target.checked ? "Y" : "N";
+  
+              axios.post('/resto/all-users/edit', {id: id, mb_top: mb_top})
+              .then(response => {
+                  const result = response.data;
+                  if(result.state==="success") alert("Successfully updated!");
+                  else alert(result.message);
+              }).catch(err => console.log(err))
+          })
+  
+          $(".mb_status").on("change", function (e){
+              const id= e.target.id;
+              const mb_status=$(`#${id}.mb_status`).val();
+              console.log(mb_status)
+  
+              axios.post('/resto/all-users/edit', {id: id, mb_status: mb_status})
+              .then(response => {
+                  const result = response.data;
+                  console.log(result);
+                  if(result.state==="success") alert("Successfully updated!");
+                  else alert(result.message);
+              }).catch(err => console.log(err))
+          })
+      })
+
+      /******************************************/
+      $(function (){
+
+     $(document).find(".save_btn").hide();
+     $(document).find(".cancel_btn").hide();
+
+     //make spin editable
+
+     $(document).on("click", ".edit_btn", function(event){
+      const id = event.target.id
+          console.log("save", id)
+      event.preventDefault();
+      let tbl_row=$(this).closest("tbody");
+      const editableCells = tbl_row.find(".row_data");
+
+    editableCells.each(function () {
+    const field = $(this).data("field");
+    const value = $(this).text();
+    $(this).html(`<input type="" class="edit-input" value="${value}" data-field="${field}">`);
+});
+
+      $(tbl_row).find(".save_btn").show();
+     $(tbl_row).find(".cancel_btn").show();
+     $(tbl_row).find(".edit_btn").hide();
+
+
+     })
+
+      ///////////////////////////////////
+      //cancel btn
+      $(document).on("click", ".cancel_btn", function(event){
+      event.preventDefault();
+      let tbl_row=$(this).closest("tbody");
+      const editableCells = tbl_row.find(".row_data");
+
+            editableCells.each(function () {
+                const field = $(this).data("field");
+                const value = $(this).find(".edit-input").attr("value");
+                $(this).html(value);
+            });
+      
+
+      $(tbl_row).find(".save_btn").hide();
+     $(tbl_row).find(".cancel_btn").hide();
+     $(tbl_row).find(".edit_btn").show();
+
+
+     })
+     ///////////////////////////////////////
+     //save btn
+     $('.save_btn').on('click', async function(e){
+          const id = e.target.id
+          console.log("save", id)
+          const updatedData = {};
+          const row = $(this).closest("tbody");
+          const editableCells = row.find(".row_data");
+
+         editableCells.each(function () {
+        const field = $(this).data("field");
+        const newValue = $(this).find(".edit-input").val();
+        updatedData[field] = newValue;
+        $(this).html(newValue); // Update the cell with the new value
+    });
+       
+        //  console.log(product_name);
+         try{
+        const response = await axios.post(`/resto/products/edit/${id}`, updatedData
+        );
+        const result = response.data;
+        // console.log( 'result::::'  ,result);
+
+        if(result.state == 'succeed') {
+          alert('succeed');
+          location.reload();
+        }else {
+          alert(result.message)
+        }
+
+      }catch (err) {
+        console.log('updateChosenProduct err:', err)
+      }
+    })
+
+
+      $(".hiding_btn").on("click", ()=>{
+        $(".dish_container").slideToggle(500);
+        $(".hiding_btn").css("display","none");
+      })
+
+      //product status changer
+      $(".new_product_status").on("change", async function(event){
+        const id=event.target.id;
+        const product_status=$(`#${id}.new_product_status`).val();
+
+        try{
+          const url=`/resto/products/edit/${id}`
+          const response=await axios.post(url, {id:id, product_status:product_status});
+          const result=response.data;
+          console.log("result::::", result);
+          if(result.state=="succeed"){
+            alert("succeed");
+            location.reload();
+          }else{
+            alert(result.message);
+          }
+        }catch(err){
+          console.log("UpdateChosenProduct err:",err)
+        }
+      })
+      //product status changer
+      $(".new_product_price_status").on("change", async function(event){
+        const id=event.target.id;
+        console.log("++++++++",id)
+        const product_price_status=$(`#${id}.new_product_price_status`).val();
+
+        try{
+          const url=`/resto/products/edit/${id}`
+          const response=await axios.post(url, {id:id, product_price_status:product_price_status});
+          const result=response.data;
+          console.log("result::::", result);
+          if(result.state=="succeed"){
+            alert("succeed");
+            location.reload();
+          }else{
+            alert(result.message);
+          }
+        }catch(err){
+          console.log("UpdateChosenProduct err:",err)
+        }
+      })
+    });
+
+    $(".username").on("click", async function(event){
+        const id=event.target.id;
+        console.log("++++++++",id)
+        try{
+          const response= await axios.get(`/resto/products/users/${id}`);
+          if(response){
+
+            window.location.href=`/resto/products/users/${id}`;
+          }else{
+            alert(response.data.message);
+          }
+        }catch(err){
+          console.log("UpdateChosenProduct err:",err)
+        }
+    
+    })
+
+    function validateForm(){
+      const user_id=$(".user_id").val();
+      const product_name=$(".product_name").val();
+      const product_price=$(".product_price").val();
+      const product_left_cnt=$(".product_left_cnt").val();
+      const product_description=$(".product_description").val();
+      const product_status=$(".product_status").val();
+      const product_collection=$(".product_collection").val();
+      const product_collection_model=$(".product_collection_model").val();
+
+
+      if(user_id==''||product_name==''||product_price==""||product_left_cnt==""||product_collection==''||product_collection_model==''||product_description==""||product_status==""){
+        alert("Iltimos hamma malumotlarni kiriting!");
+        return false;
+      }else return true;
+    }
+
+    function previewFileHandler(input, order){
+      console.log(input);
+      const image_class_name=input.className;
+      // console.log("classname:", className);
+      const file=$(`.${image_class_name}`).get(0).files[0],
+      fileType=file["type"],
+      validImageTypes=["image/jpg","image/jpeg","image/png"];
+
+      if(!validImageTypes.includes(fileType)){
+        alert("Iltimos ruxsat etilgan rasm formatlaridan foydalaning: (jpg, jpeg, png)");
+      }else{
+        if(file){
+          let reader=new FileReader();
+          reader.onload=function(){
+            $(`#image_section_${order}`).attr("src", reader.result);
+          }
+          reader.readAsDataURL(file);
+        }
+      }
+    }
+
+
+      /*******************************************/
+
+  
+
+
+    </script>
+</body>
+
+<%- include('includes/footer') %>
