@@ -12,7 +12,7 @@ module.exports = {
         NODE_ENV: "development",
       },
       //default=>fork mode , change to cluster mode
-      instances: 2,
+      instances: 1,
       exec_mode: "cluster",
     },
   ],
