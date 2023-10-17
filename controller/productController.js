@@ -16,6 +16,20 @@ productController.getAllProducts = async (req, res) => {
   }
 };
 
+productController.getUserProducts = async (req, res) => {
+  try {
+    console.log("GET cont.getUserProducts");
+    //todo:get user data
+    // res.locals.member.mb_type = "USER";
+    const product = new Product();
+    const result = await product.getUserProductsData(req.member);
+
+    res.json({ state: "success", data: result });
+  } catch (err) {
+    console.log("ERROR: cont.getUserProducts", err.message);
+    res.json({ state: "fail", message: err.message });
+  }
+};
 productController.getAllProductsElectric = async (req, res) => {
   try {
     console.log("POST cont.getAllProducts");

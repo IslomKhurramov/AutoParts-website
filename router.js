@@ -56,7 +56,11 @@ router.get(
   memberController.retrieveAuthMember,
   productController.getChosenProduct
 );
-
+router.post(
+  "/products/users",
+  memberController.retrieveAuthMember,
+  productController.getUserProducts
+);
 //order related routers
 router.post(
   "/orders/create",

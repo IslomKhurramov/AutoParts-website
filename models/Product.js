@@ -147,7 +147,20 @@ class Product {
       throw err;
     }
   }
-
+  async getUsersProductsData(member) {
+    try {
+      member._id = shapeIntoMongosObjectId(member._id);
+      const result = await this.productModel.find({
+        user_mb_id: member._id,
+        mb_type: "USER",
+      });
+      assert.ok(result, Definer.general_err1);
+      //   console.log(result);
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
   async getUserProductsInfoData(id) {
     try {
       id = shapeIntoMongosObjectId(id);
