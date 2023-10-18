@@ -134,12 +134,33 @@ class Product {
     }
   }
 
-  async getUserProductsData(member) {
+  async getUserProductsData(mb_id, inquery) {
     try {
-      member._id = shapeIntoMongosObjectId(member._id);
-      const result = await this.productModel.find({
-        user_mb_id: member._id,
-      });
+      mb_id = shapeIntoMongosObjectId(mb_id);
+
+      console.log("mb_id get user", mb_id);
+
+      const page = inquery["page"] ? inquery["page"] * 1 : 1;
+      console.log("page", page);
+      const limit = inquery["limit"] ? inquery["limit"] * 1 : 5;
+
+      const result = await this.productModel
+        .aggregate([
+          { $match: { user_mb_id: mb_id, product_status: "PROCESS" } },
+          { $sort: { createdAt: -1 } },
+          { $skip: (page - 1) * limit },
+          { $limit: limit },
+          {
+            $lookup: {
+              from: "members",
+              localField: "user_mb_id",
+              foreignField: "_id",
+              as: "member_data",
+            },
+          },
+          { $unwind: "$member_data" },
+        ])
+        .exec();
       assert.ok(result, Definer.general_err1);
       //   console.log(result);
       return result;
@@ -147,20 +168,7 @@ class Product {
       throw err;
     }
   }
-  async getUsersProductsData(member) {
-    try {
-      member._id = shapeIntoMongosObjectId(member._id);
-      const result = await this.productModel.find({
-        user_mb_id: member._id,
-        mb_type: "USER",
-      });
-      assert.ok(result, Definer.general_err1);
-      //   console.log(result);
-      return result;
-    } catch (err) {
-      throw err;
-    }
-  }
+
   async getUserProductsInfoData(id) {
     try {
       id = shapeIntoMongosObjectId(id);

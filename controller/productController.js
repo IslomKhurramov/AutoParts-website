@@ -22,8 +22,14 @@ productController.getUserProducts = async (req, res) => {
     //todo:get user data
     // res.locals.member.mb_type = "USER";
     const product = new Product();
-    const result = await product.getUserProductsData(req.member);
+    const mb_id =
+      req.query.user_mb_id !== "none" ? req.query.user_mb_id : req.member?._id;
+    console.log("mb_id::", mb_id);
+    assert.ok(mb_id, Definer.general_err1);
 
+    const result = await product.getUserProductsData(mb_id, req.query);
+
+    assert.ok(result, Definer.general_err1);
     res.json({ state: "success", data: result });
   } catch (err) {
     console.log("ERROR: cont.getUserProducts", err.message);

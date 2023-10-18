@@ -40,6 +40,8 @@ class Community {
     try {
       const auth_mb_id = shapeIntoMongosObjectId(member?._id);
       mb_id = shapeIntoMongosObjectId(mb_id);
+
+      console.log("get member article id", mb_id);
       const page = inquery["page"] ? inquery["page"] * 1 : 1;
       const limit = inquery["limit"] ? inquery["limit"] * 1 : 5;
 
