@@ -1,4 +1,4 @@
-version: "1.1"
+version: "3.3"
 
 services:
   node:
@@ -6,7 +6,7 @@ services:
     restart: always
     image: node:16.10.0
     ports:
-      - 3003:3003
+      - 3006:3006
     volumes:
       - ./:/usr/src/app
     working_dir: /usr/src/app
