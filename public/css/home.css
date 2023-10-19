@@ -35,3 +35,11 @@ body {
   transform-origin: 50% 100%;
   background: white;
 }
+.back_icon {
+  width: 30px;
+  border-radius: 50%;
+  font-style: italic;
+}
+.nav-link-back {
+  font-style: italic;
+}
