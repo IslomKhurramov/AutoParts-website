@@ -18,11 +18,11 @@ userController.home = (req, res) => {
 
 userController.getUserProducts = async (req, res) => {
   try {
-    console.log("GET cont.getUserProducts");
+    console.log("GET cont.getUserProductsbssr");
     //todo:get user data
 
     const product = new Product();
-    const result = await product.getUserProductsData(res.locals.member);
+    const result = await product.getUserProductsInfoData(res.locals.member);
 
     if (res.locals.member.mb_type === "ADMIN") {
       res.render(`all-users`, { user_data: result });
@@ -30,8 +30,8 @@ userController.getUserProducts = async (req, res) => {
       res.render(`user-products`, { user_data: result });
     }
   } catch (err) {
-    console.log("ERROR: cont.getUserProducts", err.message);
-    res.json({ state: "fail", message: err.message });
+    console.log("ERROR: cont.getUserProductsbssr", err.message);
+    res.redirect("/resto");
   }
 };
 

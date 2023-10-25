@@ -47,6 +47,11 @@ router.post(
   productController.getAllProducts
 );
 router.post(
+  "/products/user",
+  memberController.retrieveAuthMember,
+  productController.getAllProductsUser
+);
+router.post(
   "/products/electric",
   memberController.retrieveAuthMember,
   productController.getAllProductsElectric

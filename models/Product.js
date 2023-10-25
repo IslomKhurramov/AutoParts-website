@@ -34,6 +34,78 @@ class Product {
       const result = await this.productModel
         .aggregate([
           { $match: match },
+          {
+            $lookup: {
+              from: "members", // Assuming "members" is the name of the member collection
+              localField: "user_mb_id", // The field that connects product to member
+              foreignField: "_id", // The field in the member collection
+              as: "member_data",
+            },
+          },
+          {
+            $match: {
+              "member_data.mb_type": "ADMIN",
+            },
+          },
+          { $sort: sort },
+          { $skip: (data.page * 1 - 1) * data.limit },
+          { $limit: data.limit * 1 },
+          {
+            $lookup: {
+              from: "comments",
+              localField: "_id",
+              foreignField: "product_id",
+              as: "product_comments",
+            },
+          },
+          lookup_auth_member_liked(auth_mb_id),
+          lookup_auth_member_unliked(auth_mb_id),
+        ])
+        .exec();
+
+      //TODO: auth user liked or not
+
+      assert.ok(result, Definer.general_err1);
+
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async getAllProductsDataUser(member, data) {
+    try {
+      const auth_mb_id = shapeIntoMongosObjectId(member?._id);
+      // console.log("authhhh", auth_mb_id);
+
+      let match = {
+        product_status: "PROCESS",
+      };
+      if (data.product_collection) {
+        match["user_mb_id"] = shapeIntoMongosObjectId(data.user_mb_id);
+        match["product_collection"] = data?.product_collection;
+      }
+      const sort =
+        data.order === "product_price"
+          ? { [data.order]: 1 }
+          : { [data.order]: -1 };
+
+      const result = await this.productModel
+        .aggregate([
+          { $match: match },
+          {
+            $lookup: {
+              from: "members", // Assuming "members" is the name of the member collection
+              localField: "user_mb_id", // The field that connects product to member
+              foreignField: "_id", // The field in the member collection
+              as: "member_data",
+            },
+          },
+          {
+            $match: {
+              "member_data.mb_type": "USER",
+            },
+          },
           { $sort: sort },
           { $skip: (data.page * 1 - 1) * data.limit },
           { $limit: data.limit * 1 },
